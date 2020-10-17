@@ -368,59 +368,59 @@ def delete_action():
   return action_schema.jsonify(action)
 
 # Create a NestedAction
-@app.route('/nestedNestedAction', methods=['POST'])
-def add_nestedNestedAction():
+@app.route('/nestedAction', methods=['POST'])
+def add_nestedAction():
   name = request.json['name']
   description = request.json['description']
 
-  new_nestedNestedAction = NestedAction(name, description)
+  new_nestedAction = NestedAction(name, description)
 
-  db.session.add(new_nestedNestedAction)
+  db.session.add(new_nestedAction)
   db.session.commit()
 
-  return nestedNestedAction_schema.jsonify(new_nestedNestedAction)
+  return nestedAction_schema.jsonify(new_nestedAction)
 
 # Get All NestedActions
-@app.route('/nestedNestedActions', methods=['GET'])
-def get_nestedNestedActions():
-  all_nestedNestedActions = NestedAction.query.all()
-  result = nestedNestedActions_schema.dump(all_nestedNestedActions)
+@app.route('/nestedActions', methods=['GET'])
+def get_nestedActions():
+  all_nestedActions = NestedAction.query.all()
+  result = nestedActions_schema.dump(all_nestedActions)
   return jsonify(result)
 
 # Get Single NestedAction
-@app.route('/nestedNestedAction', methods=['GET'])
-def get_nestedNestedAction():
+@app.route('/nestedAction', methods=['GET'])
+def get_nestedAction():
   id = request.args.get('id')
 
-  nestedNestedAction = NestedAction.query.get(id)
-  return nestedNestedAction_schema.jsonify(nestedNestedAction)
+  nestedAction = NestedAction.query.get(id)
+  return nestedAction_schema.jsonify(nestedAction)
 
 # Update a NestedAction
-@app.route('/nestedNestedAction', methods=['PUT'])
-def update_nestedNestedAction():
+@app.route('/nestedAction', methods=['PUT'])
+def update_nestedAction():
   id = request.json['id']
   name = request.json['name']
   description = request.json['description']
   
-  nestedNestedAction = NestedAction.query.get(id)
+  nestedAction = NestedAction.query.get(id)
 
-  nestedNestedAction.name = name
-  nestedNestedAction.description = description
+  nestedAction.name = name
+  nestedAction.description = description
 
   db.session.commit()
 
-  return nestedNestedAction_schema.jsonify(nestedNestedAction)
+  return nestedAction_schema.jsonify(nestedAction)
 
 # Delete NestedAction
-@app.route('/nestedNestedAction', methods=['DELETE'])
-def delete_nestedNestedAction():
+@app.route('/nestedAction', methods=['DELETE'])
+def delete_nestedAction():
   id = request.args.get('id')
 
-  nestedNestedAction = NestedAction.query.get(id)
-  db.session.delete(nestedNestedAction)
+  nestedAction = NestedAction.query.get(id)
+  db.session.delete(nestedAction)
   db.session.commit()
 
-  return nestedNestedAction_schema.jsonify(nestedNestedAction)
+  return nestedAction_schema.jsonify(nestedAction)
 
 # End CRUD Operations
 
