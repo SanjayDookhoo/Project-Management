@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy 
 from flask_marshmallow import Marshmallow 
 import os
+import datetime
 
 # Init app
 app = Flask(__name__)
@@ -28,7 +29,7 @@ class Project(db.Model):
     self.name = name
     self.description = description
     self.status = 0
-    self.createdTimestamp = datetime.datetime.utcnow
+    self.createdTimestamp = datetime.datetime.now()
 
 class Risk(db.Model):
   __tablename__ = 'risk'
@@ -50,7 +51,7 @@ class Risk(db.Model):
     self.name = name
     self.description = description
     self.status = 0
-    self.createdTimestamp = datetime.datetime.utcnow
+    self.createdTimestamp = datetime.datetime.now()
 
 class Issue(db.Model):
   __tablename__ = 'issue'
@@ -72,7 +73,7 @@ class Issue(db.Model):
     self.name = name
     self.description = description
     self.status = 0
-    self.createdTimestamp = datetime.datetime.utcnow
+    self.createdTimestamp = datetime.datetime.now()
 
 class Action(db.Model):
   __tablename__ = 'action'
@@ -94,7 +95,7 @@ class Action(db.Model):
     self.name = name
     self.description = description
     self.status = 0
-    self.createdTimestamp = datetime.datetime.utcnow
+    self.createdTimestamp = datetime.datetime.now()
 
 class NestedAction(db.Model):
   __tablename__ = 'nestedAction'
@@ -106,13 +107,13 @@ class NestedAction(db.Model):
   createdTimestamp = db.Column(db.DateTime)
 
   parent_id = db.Column(db.Integer, db.ForeignKey('nestedAction.id'))
-  parent = db.relationship("NestedAction", backref = "children")
+  parent = db.relationship("NestedAction", remote_side=[id])
 
   def __init__(self, name, description):
     self.name = name
     self.description = description
     self.status = 0
-    self.createdTimestamp = datetime.datetime.utcnow
+    self.createdTimestamp = datetime.datetime.now()
 
 
 # my Schemas
@@ -164,7 +165,7 @@ def add_project():
 def get_projects():
   all_projects = Project.query.all()
   result = projects_schema.dump(all_projects)
-  return jsonify(result.data)
+  return jsonify(result)
 
 # Get Single Project
 @app.route('/project', methods=['GET'])
@@ -219,7 +220,7 @@ def add_risk():
 def get_risks():
   all_risks = Risk.query.all()
   result = risks_schema.dump(all_risks)
-  return jsonify(result.data)
+  return jsonify(result)
 
 # Get Single Risk
 @app.route('/risk', methods=['GET'])
@@ -274,7 +275,7 @@ def add_issue():
 def get_issues():
   all_issues = Issue.query.all()
   result = issues_schema.dump(all_issues)
-  return jsonify(result.data)
+  return jsonify(result)
 
 # Get Single Issue
 @app.route('/issue', methods=['GET'])
@@ -329,7 +330,7 @@ def add_action():
 def get_actions():
   all_actions = Action.query.all()
   result = actions_schema.dump(all_actions)
-  return jsonify(result.data)
+  return jsonify(result)
 
 # Get Single Action
 @app.route('/action', methods=['GET'])
@@ -384,7 +385,7 @@ def add_nestedNestedAction():
 def get_nestedNestedActions():
   all_nestedNestedActions = NestedAction.query.all()
   result = nestedNestedActions_schema.dump(all_nestedNestedActions)
-  return jsonify(result.data)
+  return jsonify(result)
 
 # Get Single NestedAction
 @app.route('/nestedNestedAction', methods=['GET'])
