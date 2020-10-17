@@ -117,21 +117,26 @@ class NestedAction(db.Model):
 
 
 # my Schemas
-class ProjectSchema(ma.Schema):
+class ProjectSchema(ma.SQLAlchemyAutoSchema):
   class Meta:
-    fields = ('id', 'name', 'description', 'status', 'createdTimestamp')
-class RiskSchema(ma.Schema):
+    model = Project
+    include_fk = True
+class RiskSchema(ma.SQLAlchemyAutoSchema):
   class Meta:
-    fields = ('id', 'name', 'description', 'status', 'createdTimestamp')
-class IssueSchema(ma.Schema):
+    model = Risk
+    include_fk = True
+class IssueSchema(ma.SQLAlchemyAutoSchema):
   class Meta:
-    fields = ('id', 'name', 'description', 'status', 'createdTimestamp')
-class ActionSchema(ma.Schema):
+    model = Issue
+    include_fk = True
+class ActionSchema(ma.SQLAlchemyAutoSchema):
   class Meta:
-    fields = ('id', 'name', 'description', 'status', 'createdTimestamp')
-class NestedActionSchema(ma.Schema):
+    model = Action
+    include_fk = True
+class NestedActionSchema(ma.SQLAlchemyAutoSchema):
   class Meta:
-    fields = ('id', 'name', 'description', 'status', 'createdTimestamp')
+    model = NestedAction
+    include_fk = True
 
 # Init schema
 project_schema = ProjectSchema()
