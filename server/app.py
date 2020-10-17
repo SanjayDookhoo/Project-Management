@@ -181,11 +181,13 @@ def update_project():
   id = request.json['id']
   name = request.json['name']
   description = request.json['description']
+  status = request.json['status']
   
   project = Project.query.get(id)
 
   project.name = name
   project.description = description
+  project.status = status
 
   db.session.commit()
 
@@ -236,11 +238,13 @@ def update_risk():
   id = request.json['id']
   name = request.json['name']
   description = request.json['description']
+  status = request.json['status']
   
   risk = Risk.query.get(id)
 
   risk.name = name
   risk.description = description
+  risk.status = status
 
   db.session.commit()
 
@@ -291,11 +295,13 @@ def update_issue():
   id = request.json['id']
   name = request.json['name']
   description = request.json['description']
+  status = request.json['status']
   
   issue = Issue.query.get(id)
 
   issue.name = name
   issue.description = description
+  issue.status = status
 
   db.session.commit()
 
@@ -346,11 +352,13 @@ def update_action():
   id = request.json['id']
   name = request.json['name']
   description = request.json['description']
+  status = request.json['status']
   
   action = Action.query.get(id)
 
   action.name = name
   action.description = description
+  action.status = status
 
   db.session.commit()
 
@@ -401,11 +409,13 @@ def update_nestedAction():
   id = request.json['id']
   name = request.json['name']
   description = request.json['description']
+  status = request.json['status']
   
   nestedAction = NestedAction.query.get(id)
 
   nestedAction.name = name
   nestedAction.description = description
+  nestedAction.status = status
 
   db.session.commit()
 
