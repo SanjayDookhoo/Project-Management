@@ -3,6 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow 
 import os
 import datetime
+from flask_cors import CORS, cross_origin
 
 # Init app
 app = Flask(__name__)
@@ -14,13 +15,16 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 # Init ma
 ma = Marshmallow(app)
+# Preventing the XMLHTTPRequest from being blocked by CORS policy
+cors = CORS(app)
+app.config['CORS_HEADERS'] = 'Content-Type'
 
 # my classes 
 class Project(db.Model):
   __tablename__ = 'project'
 
   id = db.Column(db.Integer, primary_key=True)
-  name = db.Column(db.String(100), unique=True)
+  name = db.Column(db.String(100))
   description = db.Column(db.String(200))
   status = db.Column(db.Integer)
   createdTimestamp = db.Column(db.DateTime)
@@ -35,7 +39,7 @@ class Risk(db.Model):
   __tablename__ = 'risk'
 
   id = db.Column(db.Integer, primary_key=True)
-  name = db.Column(db.String(100), unique=True)
+  name = db.Column(db.String(100))
   description = db.Column(db.String(200))
   status = db.Column(db.Integer)
   createdTimestamp = db.Column(db.DateTime)
@@ -47,17 +51,19 @@ class Risk(db.Model):
   nestedAction_id = db.Column(db.Integer, db.ForeignKey('nestedAction.id'), nullable=False)
   nestedAction = db.relationship("NestedAction", backref = "risk")
 
-  def __init__(self, name, description):
+  def __init__(self, name, description, project_id, nestedAction_id):
     self.name = name
     self.description = description
     self.status = 0
+    self.project_id = project_id
+    self.nestedAction_id = nestedAction_id
     self.createdTimestamp = datetime.datetime.now()
 
 class Issue(db.Model):
   __tablename__ = 'issue'
 
   id = db.Column(db.Integer, primary_key=True)
-  name = db.Column(db.String(100), unique=True)
+  name = db.Column(db.String(100))
   description = db.Column(db.String(200))
   status = db.Column(db.Integer)
   createdTimestamp = db.Column(db.DateTime)
@@ -69,17 +75,19 @@ class Issue(db.Model):
   nestedAction_id = db.Column(db.Integer, db.ForeignKey('nestedAction.id'), nullable=False)
   nestedAction = db.relationship("NestedAction", backref = "issue")
 
-  def __init__(self, name, description):
+  def __init__(self, name, description, project_id, nestedAction_id):
     self.name = name
     self.description = description
     self.status = 0
+    self.project_id = project_id
+    self.nestedAction_id = nestedAction_id
     self.createdTimestamp = datetime.datetime.now()
 
 class Action(db.Model):
   __tablename__ = 'action'
 
   id = db.Column(db.Integer, primary_key=True)
-  name = db.Column(db.String(100), unique=True)
+  name = db.Column(db.String(100))
   description = db.Column(db.String(200))
   status = db.Column(db.Integer)
   createdTimestamp = db.Column(db.DateTime)
@@ -91,17 +99,19 @@ class Action(db.Model):
   nestedAction_id = db.Column(db.Integer, db.ForeignKey('nestedAction.id'), nullable=False)
   nestedAction = db.relationship("NestedAction", backref = "action")
 
-  def __init__(self, name, description):
+  def __init__(self, name, description, project_id, nestedAction_id):
     self.name = name
     self.description = description
     self.status = 0
+    self.project_id = project_id
+    self.nestedAction_id = nestedAction_id
     self.createdTimestamp = datetime.datetime.now()
 
 class NestedAction(db.Model):
   __tablename__ = 'nestedAction'
 
   id = db.Column(db.Integer, primary_key=True)
-  name = db.Column(db.String(100), unique=True)
+  name = db.Column(db.String(100))
   description = db.Column(db.String(200))
   status = db.Column(db.Integer)
   createdTimestamp = db.Column(db.DateTime)
@@ -109,10 +119,11 @@ class NestedAction(db.Model):
   parent_id = db.Column(db.Integer, db.ForeignKey('nestedAction.id'))
   parent = db.relationship("NestedAction", remote_side=[id])
 
-  def __init__(self, name, description):
+  def __init__(self, name, description, parent_id = db.null()):
     self.name = name
     self.description = description
     self.status = 0
+    self.parent_id = parent_id
     self.createdTimestamp = datetime.datetime.now()
 
 
@@ -214,8 +225,16 @@ def delete_project():
 def add_risk():
   name = request.json['name']
   description = request.json['description']
+  project_id = request.json['project_id']
 
-  new_risk = Risk(name, description)
+  # create nestedAction to allow starting of nestedActions
+  new_nestedAction = NestedAction(name, description)
+  db.session.add(new_nestedAction)
+  db.session.commit()
+
+  nestedAction_id = new_nestedAction.id
+
+  new_risk = Risk(name, description, project_id, nestedAction_id)
 
   db.session.add(new_risk)
   db.session.commit()
@@ -271,8 +290,16 @@ def delete_risk():
 def add_issue():
   name = request.json['name']
   description = request.json['description']
+  project_id = request.json['project_id']
 
-  new_issue = Issue(name, description)
+  # create nestedAction to allow starting of nestedActions
+  new_nestedAction = NestedAction(name, description)
+  db.session.add(new_nestedAction)
+  db.session.commit()
+
+  nestedAction_id = new_nestedAction.id
+
+  new_issue = Issue(name, description, project_id, nestedAction_id)
 
   db.session.add(new_issue)
   db.session.commit()
@@ -328,8 +355,16 @@ def delete_issue():
 def add_action():
   name = request.json['name']
   description = request.json['description']
+  project_id = request.json['project_id']
 
-  new_action = Action(name, description)
+  # create nestedAction to allow starting of nestedActions
+  new_nestedAction = NestedAction(name, description)
+  db.session.add(new_nestedAction)
+  db.session.commit()
+
+  nestedAction_id = new_nestedAction.id
+
+  new_action = Action(name, description, project_id, nestedAction_id)
 
   db.session.add(new_action)
   db.session.commit()
@@ -386,7 +421,11 @@ def add_nestedAction():
   name = request.json['name']
   description = request.json['description']
 
-  new_nestedAction = NestedAction(name, description)
+  if ('parent_id' in request.json):
+    parent_id = request.json['parent_id']
+    new_nestedAction = NestedAction(name, description, parent_id)
+  else:
+    new_nestedAction = NestedAction(name, description)
 
   db.session.add(new_nestedAction)
   db.session.commit()
