@@ -29,6 +29,10 @@ class Project(db.Model):
   status = db.Column(db.Integer)
   createdTimestamp = db.Column(db.DateTime)
 
+  risks = db.relationship("Risk", back_populates = "project", cascade = "all, delete, delete-orphan")
+  issues = db.relationship("Issue", back_populates = "project", cascade = "all, delete, delete-orphan")
+  actions = db.relationship("Action", back_populates = "project", cascade = "all, delete, delete-orphan")
+
   def __init__(self, name, description):
     self.name = name
     self.description = description
@@ -45,11 +49,11 @@ class Risk(db.Model):
   createdTimestamp = db.Column(db.DateTime)
 
   project_id = db.Column(db.Integer, db.ForeignKey('project.id'), nullable=False)
-  project = db.relationship("Project", backref = "risks")
+  project = db.relationship("Project", back_populates = "risks")
 
    # creates 1 - 1 relation with NestedAction, where NestedAction can self reference to stack multiple times
-  nestedAction_id = db.Column(db.Integer, db.ForeignKey('nestedAction.id'), nullable=False)
-  nestedAction = db.relationship("NestedAction", backref = "risk")
+  nestedAction_id = db.Column(db.Integer, db.ForeignKey('nestedAction.id'))
+  nestedAction = db.relationship("NestedAction", back_populates = "risk", cascade = "all, delete, delete-orphan", single_parent = True)
 
   def __init__(self, name, description, project_id, nestedAction_id):
     self.name = name
@@ -69,11 +73,11 @@ class Issue(db.Model):
   createdTimestamp = db.Column(db.DateTime)
 
   project_id = db.Column(db.Integer, db.ForeignKey('project.id'), nullable=False)
-  project = db.relationship("Project", backref = "issues")
+  project = db.relationship("Project", back_populates = "issues")
 
    # creates 1 - 1 relation with NestedAction, where NestedAction can self reference to stack multiple times
   nestedAction_id = db.Column(db.Integer, db.ForeignKey('nestedAction.id'), nullable=False)
-  nestedAction = db.relationship("NestedAction", backref = "issue")
+  nestedAction = db.relationship("NestedAction", back_populates = "issue", cascade = "all, delete, delete-orphan", single_parent = True)
 
   def __init__(self, name, description, project_id, nestedAction_id):
     self.name = name
@@ -93,11 +97,11 @@ class Action(db.Model):
   createdTimestamp = db.Column(db.DateTime)
 
   project_id = db.Column(db.Integer, db.ForeignKey('project.id'), nullable=False)
-  project = db.relationship("Project", backref = "actions")
+  project = db.relationship("Project", back_populates = "actions")
 
   # creates 1 - 1 relation with NestedAction, where NestedAction can self reference to stack multiple times
   nestedAction_id = db.Column(db.Integer, db.ForeignKey('nestedAction.id'), nullable=False)
-  nestedAction = db.relationship("NestedAction", backref = "action")
+  nestedAction = db.relationship("NestedAction", back_populates = "action", cascade = "all, delete, delete-orphan", single_parent = True)
 
   def __init__(self, name, description, project_id, nestedAction_id):
     self.name = name
@@ -117,9 +121,13 @@ class NestedAction(db.Model):
   createdTimestamp = db.Column(db.DateTime)
 
   parent_id = db.Column(db.Integer, db.ForeignKey('nestedAction.id'))
-  parent = db.relationship("NestedAction", remote_side=[id])
+  parent = db.relationship("NestedAction", cascade = "all, delete, delete-orphan", single_parent = True)
 
-  def __init__(self, name, description, parent_id = db.null()):
+  risk = db.relationship("Risk", back_populates = "nestedAction")
+  issue = db.relationship("Issue", back_populates = "nestedAction")
+  action = db.relationship("Action", back_populates = "nestedAction")
+
+  def __init__(self, name = "<used as link>", description = "<used as link>", parent_id = db.null()):
     self.name = name
     self.description = description
     self.status = 0
@@ -228,7 +236,7 @@ def add_risk():
   project_id = request.json['project_id']
 
   # create nestedAction to allow starting of nestedActions
-  new_nestedAction = NestedAction(name, description)
+  new_nestedAction = NestedAction()
   db.session.add(new_nestedAction)
   db.session.commit()
 
@@ -293,7 +301,7 @@ def add_issue():
   project_id = request.json['project_id']
 
   # create nestedAction to allow starting of nestedActions
-  new_nestedAction = NestedAction(name, description)
+  new_nestedAction = NestedAction()
   db.session.add(new_nestedAction)
   db.session.commit()
 
@@ -358,7 +366,7 @@ def add_action():
   project_id = request.json['project_id']
 
   # create nestedAction to allow starting of nestedActions
-  new_nestedAction = NestedAction(name, description)
+  new_nestedAction = NestedAction()
   db.session.add(new_nestedAction)
   db.session.commit()
 
