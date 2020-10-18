@@ -486,6 +486,46 @@ def delete_nestedAction():
 
 # End CRUD Operations
 
+# Begin Advanced CRUD Operations (Specifically including filtering)
+
+# Get All Risks, associated with a particular project
+@app.route('/risks_from_project', methods=['GET'])
+def get_risks_from_project():
+  project_id = request.args.get('project_id')
+
+  all_risks = Risk.query.filter(Risk.project_id == project_id).all()
+  result = risks_schema.dump(all_risks)
+  return jsonify(result)
+
+# Get All Issues, associated with a particular project
+@app.route('/issues_from_project', methods=['GET'])
+def get_issues_from_project():
+  project_id = request.args.get('project_id')
+
+  all_issues = Issue.query.filter(Issue.project_id == project_id).all()
+  result = issues_schema.dump(all_issues)
+  return jsonify(result)
+
+# Get All Actions, associated with a particular project
+@app.route('/actions_from_project', methods=['GET'])
+def get_actions_from_project():
+  project_id = request.args.get('project_id')
+
+  all_actions = Action.query.filter(Action.project_id == project_id).all()
+  result = actions_schema.dump(all_actions)
+  return jsonify(result)
+
+# Get All NestedActions, that have the specified nestedAction as a parent
+@app.route('/nestedActions_from_parent', methods=['GET'])
+def get_nestedActions_from_parent():
+  parent_id = request.args.get('parent_id')
+
+  all_nestedActions = NestedAction.query.filter(NestedAction.parent_id == parent_id).all()
+  result = nestedActions_schema.dump(all_nestedActions)
+  return jsonify(result)
+
+# End Advanced CRUD Operations (Specifically including filtering)
+
 # Run Server
 if __name__ == '__main__':
   app.run(debug=True)
