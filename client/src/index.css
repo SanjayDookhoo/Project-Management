@@ -16,3 +16,7 @@ nav a.active{
   border-bottom: 5px solid #333;
   transition: all ease 0.5s;
 }
+
+table tr:hover{
+  cursor: pointer;
+}
