@@ -17,6 +17,6 @@ nav a.active{
   transition: all ease 0.5s;
 }
 
-table tr:hover{
+.hoverable:hover{
   cursor: pointer;
-}
+} 

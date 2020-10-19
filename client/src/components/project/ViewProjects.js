@@ -8,7 +8,8 @@ class ViewProjects extends Component {
     projects: [],
     selected: -1,
     edit: false,
-    create: false
+    create: false,
+    renderAddOptions: true
   }
   
   componentDidMount = () => {
@@ -24,9 +25,16 @@ class ViewProjects extends Component {
     })
   }
 
+  handleUnfocus = () => {
+    this.setState({
+      selected: -1
+    })
+  }
+
   handleModifyClick = (id) => {
     this.setState({
-      selected: id
+      selected: id,
+      renderAddOptions: true
     })
   }
 
@@ -38,7 +46,8 @@ class ViewProjects extends Component {
 
   handleCreateClick = () => {
     this.setState({
-      create: true
+      create: true,
+      renderAddOptions: false
     })
   }
 
@@ -48,11 +57,13 @@ class ViewProjects extends Component {
 
       this.setState({
         edit: false,
+        renderAddOptions: true,
         projects: [...newProjects,rec_project]
       })
     }else{//was new
       this.setState({
-        edit: false,
+        create: false,
+        renderAddOptions: true,
         projects: [...this.state.projects,rec_project]
       })
     }
@@ -87,7 +98,7 @@ class ViewProjects extends Component {
     return this.state.projects.map((project, index) => {
        const { id, name, description, status } = project
        return (
-          <tr key={id} onClick={() => this.handleModifyClick(id)}>
+          <tr className="hoverable" key={id} onClick={() => this.handleModifyClick(id)}>
              <td>{name}</td>
              <td>{description}</td>
              <td> <div className="center"> {status} % </div>
@@ -108,18 +119,38 @@ class ViewProjects extends Component {
     const editComponent = this.state.edit ? <EditProject project={this.state.projects.find(project => project.id==this.state.selected)} closeEdit={this.closeEdit}/> : null
     const createComponent = this.state.create ? <EditProject closeEdit={this.closeEdit}/> : null
 
+    const addOptions = this.state.renderAddOptions ? (
+      <div className="card-action">
+        <div className="center">
+          <a className="waves-effect waves-light btn" onClick={this.handleCreateClick}><i className="material-icons left">add</i>Create New</a>
+        </div>
+      </div>
+    ) : (
+      null
+    )
+
+    const addOptionsSelectedItem = this.state.renderAddOptions ? (
+      <div className="card-action">
+        <a className="waves-effect waves-light btn green" onClick={() => this.handleEditClick(selected)}><i className="material-icons left">edit</i>Edit</a>
+        <a className="waves-effect waves-light btn red" onClick={() => this.handleDeleteClick(selected)}><i className="material-icons left">delete</i>Delete</a>
+        <a className="waves-effect waves-light btn blue" onClick={() => this.handleStartManagementClick(selected)}><i className="material-icons left">insert_chart</i>Start Management</a>
+      </div>
+    ) : (
+      null
+    )
+
     if(selected != -1){
       ret = (
         <div>
           <div className="post card"> 
-            <div className="card-content"> 
-              <h5> {projects.find(project => project.id == selected).name} </h5>
+            <div className="card-content" onClick={this.handleUnfocus}> 
+              <div className="post card hoverable"> 
+                <div className="card-content">
+                  <h5> <b>Selected: </b> {projects.find(project => project.id == selected).name} </h5>
+                </div>
+              </div>
             </div>
-            <div className="card-action">
-              <a className="waves-effect waves-light btn green" onClick={() => this.handleEditClick(selected)}><i className="material-icons left">edit</i>Edit</a>
-              <a className="waves-effect waves-light btn red" onClick={() => this.handleDeleteClick(selected)}><i className="material-icons left">delete</i>Delete</a>
-              <a className="waves-effect waves-light btn blue" onClick={() => this.handleStartManagementClick(selected)}><i className="material-icons left">insert_chart</i>Start Management</a>
-            </div>
+            {addOptionsSelectedItem}
           </div>
           {editComponent}
         </div>
@@ -129,7 +160,7 @@ class ViewProjects extends Component {
         <div>
           <div className="post card"> 
             <div className="card-content"> 
-              <table className="highlight" >
+              <table >
                   <thead>
                     <tr>
                       <th>Name</th>
@@ -142,11 +173,7 @@ class ViewProjects extends Component {
                   </tbody>
               </table>
             </div>
-            <div className="card-action">
-              <div className="center">
-                <a className="waves-effect waves-light btn" onClick={this.handleCreateClick}><i className="material-icons left">add</i>Create New</a>
-              </div>
-            </div>
+            {addOptions}
           </div>
           {createComponent}
         </div>
