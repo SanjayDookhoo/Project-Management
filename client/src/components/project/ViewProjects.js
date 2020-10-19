@@ -52,22 +52,28 @@ class ViewProjects extends Component {
   }
 
   closeEdit = (rec_project) => {
-    if (this.state.projects.find(project => project.id == rec_project.id)){ //was a update
-      const newProjects = this.state.projects.filter(project => project.id != rec_project.id)
+    if(rec_project=='cancelled'){
+      if (this.state.projects.find(project => project.id == rec_project.id)){ //was a update
+        const newProjects = this.state.projects.filter(project => project.id != rec_project.id)
 
-      this.setState({
-        edit: false,
-        renderAddOptions: true,
-        projects: [...newProjects,rec_project]
-      })
-    }else{//was new
+        this.setState({
+          edit: false,
+          renderAddOptions: true,
+          projects: [...newProjects,rec_project]
+        })
+      }else{//was new
+        this.setState({
+          create: false,
+          renderAddOptions: true,
+          projects: [...this.state.projects,rec_project]
+        })
+      }
+    }else{
       this.setState({
         create: false,
-        renderAddOptions: true,
-        projects: [...this.state.projects,rec_project]
+        renderAddOptions: true
       })
     }
-    
   }
 
   handleDeleteClick = (id) => {

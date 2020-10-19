@@ -20,3 +20,11 @@ nav a.active{
 .hoverable:hover{
   cursor: pointer;
 } 
+
+.btn{
+  margin-right: 10px;
+}
+
+.fwbtn > .btn{
+  width: 100%;
+}

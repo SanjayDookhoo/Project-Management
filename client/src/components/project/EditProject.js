@@ -59,37 +59,46 @@ class EditProject extends Component {
     
   }
 
+  handleCancel = () => {
+    this.props.closeEdit('cancelled')
+  }
+
   render() {
     const { name, description, status } = this.state
-    const button = this.props.project ? (
-      <a className="waves-effect waves-light btn" onClick={this.handleSave}><i className="material-icons left">save</i>Save</a>
-    ) : (
-      <a className="waves-effect waves-light btn" onClick={this.handleSave}><i className="material-icons left">create</i>Create</a>
-    )
-
+    
     return(
       <div className="post card"> 
-        <div className="card-content"> 
         <form onSubmit={this.handleSave}>
-          <div className="input-field">
-            <input id="name" type="text" className="validate" value={name} onChange={this.handleChange}/>
-            <label htmlFor="name" className="active">Name</label>
-          </div>
-          <div className="input-field">
-            <input id="description" type="text" className="validate" value={description} onChange={this.handleChange}/>
-            <label htmlFor="description" className="active">Description</label>
-          </div>
-          <div className="input-field">
-            <input id="status" type="number" min="0" max="100" className="validate" value={status} onChange={this.handleChange}/>
-            <label htmlFor="status" className="active">Status</label>
+          <div className="card-content"> 
+            <div className="input-field">
+              <input id="name" type="text" className="validate" value={name} onChange={this.handleChange}/>
+              <label htmlFor="name" className="active">Name</label>
+            </div>
+            <div className="input-field">
+              <input id="description" type="text" className="validate" value={description} onChange={this.handleChange}/>
+              <label htmlFor="description" className="active">Description</label>
+            </div>
+            <div className="input-field">
+              <input id="status" type="number" min="0" max="100" className="validate" value={status} onChange={this.handleChange}/>
+              <label htmlFor="status" className="active">Status</label>
+            </div>
+            
+            <div className="row">
+              <div className="col s6 fwbtn">
+                {/* if updating or creating a new, the final confirmation button will be a reflection of the task being done */}
+                { this.props.project ? (
+                    <button className="waves-effect waves-light btn" type="submit" name="action"><i className="material-icons left">save</i>Save</button>
+                  ) : (
+                    <button className="waves-effect waves-light btn" type="submit" name="action"><i className="material-icons left">create</i>Create</button>
+                  )
+                }
+              </div>
+              <div className="col s6 fwbtn">
+                <a className="waves-effect waves-light btn" onClick={this.handleCancel}><i className="material-icons left">cancel</i>Cancel</a>
+              </div>
+            </div>
           </div>
         </form>
-        </div>
-        <div className="card-action">
-          <div className="center">
-            {button}
-          </div>
-        </div>
       </div>
     )
   }
