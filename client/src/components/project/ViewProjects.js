@@ -1,110 +1,25 @@
-import React, { Component } from 'react';
-import axios from 'axios'
-import { withRouter } from 'react-router-dom'
-import EditProject from './EditProject';
+import React, { Component} from 'react';
 
 class ViewProjects extends Component {
-  state = {
-    projects: [],
-    selected: -1,
-    edit: false,
-    create: false,
-    renderAddOptions: true
-  }
-  
-  componentDidMount = () => {
-    let self = this //The callback in the axios function is called not from within your function, so the 'this' is not pointing to what you expect, i.e., your class.
-
-    axios.get(process.env.REACT_APP_API_URL + '/projects', {})
-    .then(function (response) {
-      if(response.status == 200){
-        self.setState({
-          projects: response.data
-        })
-      }
-    })
-  }
-
-  handleUnfocus = () => {
-    this.setState({
-      selected: -1
-    })
-  }
-
-  handleModifyClick = (id) => {
-    this.setState({
-      selected: id,
-      renderAddOptions: true
-    })
-  }
-
-  handleEditClick = (id) => {
-    this.setState({
-      edit: true
-    })
-  }
-
-  handleCreateClick = () => {
-    this.setState({
-      create: true,
-      renderAddOptions: false
-    })
-  }
-
-  closeEdit = (rec_project) => {
-    if(rec_project=='cancelled'){
-      if (this.state.projects.find(project => project.id == rec_project.id)){ //was a update
-        const newProjects = this.state.projects.filter(project => project.id != rec_project.id)
-
-        this.setState({
-          edit: false,
-          renderAddOptions: true,
-          projects: [...newProjects,rec_project]
-        })
-      }else{//was new
-        this.setState({
-          create: false,
-          renderAddOptions: true,
-          projects: [...this.state.projects,rec_project]
-        })
-      }
-    }else{
-      this.setState({
-        create: false,
-        renderAddOptions: true
-      })
+  shouldComponentUpdate(nextProps, nextState) {
+    if (this.props.selected === nextProps.selected &&
+      this.props.projects === nextProps.projects){
+      return false;
+    } else {
+      return true;
     }
   }
 
-  handleDeleteClick = (id) => {
-    let self = this //The callback in the axios function is called not from within your function, so the 'this' is not pointing to what you expect, i.e., your class.
-
-    axios.delete(process.env.REACT_APP_API_URL + '/project', {
-      params: {
-        id
-      }
-    })
-    .then(function (response) {
-      if(response.status == 200){
-        self.setState({
-          projects: self.state.projects.filter(project => project.id != id),
-          selected: -1
-        })
-      }
-    })
-  }
-
-  handleStartManagementClick = (id) => {
-    this.props.history.push('/project/risks')
-
-    /*need to set project selected in redux */
+  componentDidUpdate = () => {
+    console.log(new Date().toLocaleTimeString(),"ViewProject.js update")
   }
 
   renderTableData() {
-    return this.state.projects.map((project, index) => {
+    return this.props.projects.map((project, index) => {
        const { id, name, description, status } = project
+
        return (
-          <tr className="hoverable" key={id} onClick={() => this.handleModifyClick(id)}>
+          <tr className="hoverable" key={id} onClick={() => this.props.handleFocus(id)}>
              <td>{name}</td>
              <td>{description}</td>
              <td> <div className="center"> {status} % </div>
@@ -118,51 +33,28 @@ class ViewProjects extends Component {
   }
 
   render() {
-    let ret=null;
-    let selected = this.state.selected;
-    let projects = this.state.projects;
+    let view = null
 
-    const editComponent = this.state.edit ? <EditProject project={this.state.projects.find(project => project.id==this.state.selected)} closeEdit={this.closeEdit}/> : null
-    const createComponent = this.state.create ? <EditProject closeEdit={this.closeEdit}/> : null
+    const { selected, projects } = this.props
 
-    const addOptions = this.state.renderAddOptions ? (
-      <div className="card-action">
-        <div className="center">
-          <a className="waves-effect waves-light btn" onClick={this.handleCreateClick}><i className="material-icons left">add</i>Create New</a>
-        </div>
-      </div>
-    ) : (
-      null
-    )
+    if(selected !== -1){
+      const projectName = projects.find(project => project.id === selected).name
 
-    const addOptionsSelectedItem = this.state.renderAddOptions ? (
-      <div className="card-action">
-        <a className="waves-effect waves-light btn green" onClick={() => this.handleEditClick(selected)}><i className="material-icons left">edit</i>Edit</a>
-        <a className="waves-effect waves-light btn red" onClick={() => this.handleDeleteClick(selected)}><i className="material-icons left">delete</i>Delete</a>
-        <a className="waves-effect waves-light btn blue" onClick={() => this.handleStartManagementClick(selected)}><i className="material-icons left">insert_chart</i>Start Management</a>
-      </div>
-    ) : (
-      null
-    )
-
-    if(selected != -1){
-      ret = (
+      view = (
         <div>
           <div className="post card"> 
-            <div className="card-content" onClick={this.handleUnfocus}> 
+            <div className="card-content" onClick={this.props.handleUnfocus}> 
               <div className="post card hoverable"> 
                 <div className="card-content">
-                  <h5> <b>Selected: </b> {projects.find(project => project.id == selected).name} </h5>
+                  <h5> <b>Selected: </b> {projectName} </h5>
                 </div>
               </div>
             </div>
-            {addOptionsSelectedItem}
           </div>
-          {editComponent}
         </div>
       )
     }else{
-      ret = this.state.projects.length ? (
+      view = this.props.projects.length ? (
         <div>
           <div className="post card"> 
             <div className="card-content"> 
@@ -179,9 +71,7 @@ class ViewProjects extends Component {
                   </tbody>
               </table>
             </div>
-            {addOptions}
           </div>
-          {createComponent}
         </div>
       ) : (
         <div>
@@ -190,13 +80,12 @@ class ViewProjects extends Component {
               No Projects 
             </div>
           </div>
-          {createComponent}
         </div>
       )
     }
     
-    return ret
+    return view
   }
 }
 
-export default withRouter( ViewProjects );
+export default ViewProjects;
