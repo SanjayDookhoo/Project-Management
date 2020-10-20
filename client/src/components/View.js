@@ -1,6 +1,6 @@
 import React, { Component} from 'react';
 
-class ViewProjects extends Component {
+class View extends Component {
   shouldComponentUpdate(nextProps, nextState) {
     if (this.props.selected === nextProps.selected &&
       this.props.projects === nextProps.projects){
@@ -35,16 +35,16 @@ class ViewProjects extends Component {
   render() {
     let view = null
 
-    const { selected, projects } = this.props
-
+    const { color, category, selected, projects } = this.props
+    
     if(selected !== -1){
       const projectName = projects.find(project => project.id === selected).name
 
       view = (
         <div>
-          <div className="post card"> 
+          <div className={`post card white-text ${color}`}> 
             <div className="card-content" onClick={this.props.handleUnfocus}> 
-              <div className="post card hoverable"> 
+              <div className={`post card white-text ${color} hoverable`}> 
                 <div className="card-content">
                   <h5> <b>Selected: </b> {projectName} </h5>
                 </div>
@@ -56,7 +56,7 @@ class ViewProjects extends Component {
     }else{
       view = this.props.projects.length ? (
         <div>
-          <div className="post card"> 
+          <div className={`post card white-text ${color}`}> 
             <div className="card-content"> 
               <table >
                   <thead>
@@ -75,9 +75,9 @@ class ViewProjects extends Component {
         </div>
       ) : (
         <div>
-          <div className="post card"> 
+          <div className={`post card white-text ${color}`}> 
             <div className="card-content"> 
-              No Projects 
+              No {`${category === 'NestedAction' ? 'Nested Action' : category}s`}
             </div>
           </div>
         </div>
@@ -88,4 +88,4 @@ class ViewProjects extends Component {
   }
 }
 
-export default ViewProjects;
+export default View;

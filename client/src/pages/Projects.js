@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
-import ContainerProject from '../components/project/ContainerProject'
+import Levels from '../components/Levels';
 
 class Projects extends Component {
   render() {
     return (
         <div>
-          <ContainerProject/>
+          <Levels
+            category="Project"
+          />
         </div>
     );
   }

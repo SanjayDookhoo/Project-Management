@@ -1,10 +1,13 @@
 import React, { Component } from 'react';
+import Levels from '../components/Levels';
 
 class Risks extends Component {
   render() {
     return (
         <div>
-          Risks
+          <Levels
+            category="Risk"
+          />
         </div>
     );
   }

@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import axios from 'axios'
 import { withRouter } from 'react-router-dom'
-import EditProject from './EditProject';
-import OptionProject from './OptionProject';
-import ViewProjects from './ViewProjects';
+import Edit from './Edit';
+import Option from './Option';
+import View from './View';
 
 
-class ContainerProject extends Component {
+class Level extends Component {
   state = {
     projects: [],
     selected: -1,
@@ -15,8 +15,7 @@ class ContainerProject extends Component {
   
   componentDidMount = () => {
     let self = this //The callback in the axios function is called not from within your function, so the 'this' is not pointing to what you expect, i.e., your class.
-
-    axios.get(process.env.REACT_APP_API_URL + '/projects', {})
+    axios.get(`${process.env.REACT_APP_API_URL}/${this.props.category}s`, {})
     .then(function (response) {
       if(response.status === 200){
         self.setState({
@@ -75,7 +74,7 @@ class ContainerProject extends Component {
   handleDeleteClick = (id) => {
     let self = this //The callback in the axios function is called not from within your function, so the 'this' is not pointing to what you expect, i.e., your class.
 
-    axios.delete(process.env.REACT_APP_API_URL + '/project', {
+    axios.delete(`${process.env.REACT_APP_API_URL}/${this.props.category}`, {
       params: {
         id
       }
@@ -99,14 +98,20 @@ class ContainerProject extends Component {
   render() {
     return (
       <div>
-        <ViewProjects 
+        <View
+          category = {this.props.category} 
+          color = {this.props.color} 
+
           selected = {this.state.selected} 
           projects = {this.state.projects} 
           handleFocus = {this.handleFocus} 
           handleUnfocus= {this.handleUnfocus} 
         />
 
-        <OptionProject 
+        <Option
+          category = {this.props.category} 
+          color = {this.props.color} 
+          
           selected = {this.state.selected}
           isVisible = {!this.state.editOrCreate} 
           handleEditOrCreateClick = {this.handleEditOrCreateClick} 
@@ -114,7 +119,10 @@ class ContainerProject extends Component {
           handleStartManagementClick = {this.handleStartManagementClick} 
         />
 
-        <EditProject 
+        <Edit
+          category = {this.props.category} 
+          color = {this.props.color} 
+          
           project = { this.state.selected === -1 ? null : this.state.projects.find(project => project.id === this.state.selected) } 
           ifCreate = {this.state.selected === -1 ? true : false}
           isVisible = {this.state.editOrCreate} 
@@ -125,4 +133,5 @@ class ContainerProject extends Component {
   }
 }
 
-export default withRouter( ContainerProject );
+export default withRouter( Level );
+

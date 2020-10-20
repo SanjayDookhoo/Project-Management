@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-class OptionProject extends Component {
+class Option extends Component {
   shouldComponentUpdate(nextProps, nextState) {
     if (this.props.selected === nextProps.selected &&
       this.props.isVisible === nextProps.isVisible){
@@ -15,19 +15,19 @@ class OptionProject extends Component {
   }
 
   render() {
-    const { selected, isVisible, handleEditOrCreateClick, handleDeleteClick, handleStartManagementClick } = this.props
+    const { color, category, selected, isVisible, handleEditOrCreateClick, handleDeleteClick, handleStartManagementClick } = this.props
 
     let options = null
     if (selected !== -1 && isVisible === true){
       options = (
-        <div className="post card">
+        <div className={`post card white-text ${color}`}>
           <div className="card-content">
             <div className="row">
               <div className="col s4 fwbtn">
-                <a className="waves-effect waves-light btn" onClick={handleEditOrCreateClick}><i className="material-icons left">edit</i>Edit</a>
+                <a className="waves-effect waves-light btn" onClick={handleEditOrCreateClick}><i className="material-icons left">edit</i>Edit {category === 'NestedAction' ? 'Nested Action' : category}</a>
               </div>
               <div className="col s4 fwbtn">
-                <a className="waves-effect waves-light btn" onClick={() => handleDeleteClick(selected)}><i className="material-icons left">delete</i>Delete</a>
+                <a className="waves-effect waves-light btn" onClick={() => handleDeleteClick(selected)}><i className="material-icons left">delete</i>Delete {category === 'NestedAction' ? 'Nested Action' : category}</a>
               </div>
               <div className="col s4 fwbtn">
                 <a className="waves-effect waves-light btn" onClick={handleStartManagementClick}><i className="material-icons left">insert_chart</i>Start Management</a>
@@ -38,11 +38,11 @@ class OptionProject extends Component {
       )
     }else if (selected === -1 && isVisible === true){
       options = (
-        <div className="post card">
+        <div className={`post card white-text ${color}`}>
           <div className="card-content">
             <div className="row">
               <div className="col s12 fwbtn">
-                <a className="waves-effect waves-light btn" onClick={handleEditOrCreateClick}><i className="material-icons left">add</i>Create New</a>
+                <a className="waves-effect waves-light btn" onClick={handleEditOrCreateClick}><i className="material-icons left">add</i>Create New {category === 'NestedAction' ? 'Nested Action' : category}</a>
               </div>
             </div>
           </div>
@@ -59,4 +59,4 @@ class OptionProject extends Component {
   }
 }
 
-export default OptionProject;
+export default Option;
