@@ -172,7 +172,7 @@ nestedActions_schema = NestedActionSchema(many=True)
 # Begin CRUD Operations
 
 # Create a Project
-@app.route('/project', methods=['POST'])
+@app.route('/Project', methods=['POST'])
 def add_project():
   name = request.json['name']
   description = request.json['description']
@@ -185,14 +185,14 @@ def add_project():
   return project_schema.jsonify(new_project)
 
 # Get All Projects
-@app.route('/projects', methods=['GET'])
+@app.route('/Projects', methods=['GET'])
 def get_projects():
   all_projects = Project.query.all()
   result = projects_schema.dump(all_projects)
   return jsonify(result)
 
 # Get Single Project
-@app.route('/project', methods=['GET'])
+@app.route('/Project', methods=['GET'])
 def get_project():
   id = request.args.get('id')
 
@@ -200,7 +200,7 @@ def get_project():
   return project_schema.jsonify(project)
 
 # Update a Project
-@app.route('/project', methods=['PUT'])
+@app.route('/Project', methods=['PUT'])
 def update_project():
   id = request.json['id']
   name = request.json['name']
@@ -218,7 +218,7 @@ def update_project():
   return project_schema.jsonify(project)
 
 # Delete Project
-@app.route('/project', methods=['DELETE'])
+@app.route('/Project', methods=['DELETE'])
 def delete_project():
   id = request.args.get('id')
 
@@ -229,7 +229,7 @@ def delete_project():
   return project_schema.jsonify(project)
 
 # Create a Risk
-@app.route('/risk', methods=['POST'])
+@app.route('/Risk', methods=['POST'])
 def add_risk():
   name = request.json['name']
   description = request.json['description']
@@ -250,14 +250,14 @@ def add_risk():
   return risk_schema.jsonify(new_risk)
 
 # Get All Risks
-@app.route('/risks', methods=['GET'])
+@app.route('/Risks', methods=['GET'])
 def get_risks():
   all_risks = Risk.query.all()
   result = risks_schema.dump(all_risks)
   return jsonify(result)
 
 # Get Single Risk
-@app.route('/risk', methods=['GET'])
+@app.route('/Risk', methods=['GET'])
 def get_risk():
   id = request.args.get('id')
 
@@ -265,7 +265,7 @@ def get_risk():
   return risk_schema.jsonify(risk)
 
 # Update a Risk
-@app.route('/risk', methods=['PUT'])
+@app.route('/Risk', methods=['PUT'])
 def update_risk():
   id = request.json['id']
   name = request.json['name']
@@ -283,7 +283,7 @@ def update_risk():
   return risk_schema.jsonify(risk)
 
 # Delete Risk
-@app.route('/risk', methods=['DELETE'])
+@app.route('/Risk', methods=['DELETE'])
 def delete_risk():
   id = request.args.get('id')
 
@@ -294,7 +294,7 @@ def delete_risk():
   return risk_schema.jsonify(risk)
 
 # Create a Issue
-@app.route('/issue', methods=['POST'])
+@app.route('/Issues', methods=['POST'])
 def add_issue():
   name = request.json['name']
   description = request.json['description']
@@ -315,14 +315,14 @@ def add_issue():
   return issue_schema.jsonify(new_issue)
 
 # Get All Issues
-@app.route('/issues', methods=['GET'])
+@app.route('/Issuess', methods=['GET'])
 def get_issues():
   all_issues = Issue.query.all()
   result = issues_schema.dump(all_issues)
   return jsonify(result)
 
 # Get Single Issue
-@app.route('/issue', methods=['GET'])
+@app.route('/Issues', methods=['GET'])
 def get_issue():
   id = request.args.get('id')
 
@@ -330,7 +330,7 @@ def get_issue():
   return issue_schema.jsonify(issue)
 
 # Update a Issue
-@app.route('/issue', methods=['PUT'])
+@app.route('/Issues', methods=['PUT'])
 def update_issue():
   id = request.json['id']
   name = request.json['name']
@@ -348,7 +348,7 @@ def update_issue():
   return issue_schema.jsonify(issue)
 
 # Delete Issue
-@app.route('/issue', methods=['DELETE'])
+@app.route('/Issues', methods=['DELETE'])
 def delete_issue():
   id = request.args.get('id')
 
@@ -359,7 +359,7 @@ def delete_issue():
   return issue_schema.jsonify(issue)
 
 # Create a Action
-@app.route('/action', methods=['POST'])
+@app.route('/Action', methods=['POST'])
 def add_action():
   name = request.json['name']
   description = request.json['description']
@@ -380,14 +380,14 @@ def add_action():
   return action_schema.jsonify(new_action)
 
 # Get All Actions
-@app.route('/actions', methods=['GET'])
+@app.route('/Actions', methods=['GET'])
 def get_actions():
   all_actions = Action.query.all()
   result = actions_schema.dump(all_actions)
   return jsonify(result)
 
 # Get Single Action
-@app.route('/action', methods=['GET'])
+@app.route('/Action', methods=['GET'])
 def get_action():
   id = request.args.get('id')
 
@@ -395,7 +395,7 @@ def get_action():
   return action_schema.jsonify(action)
 
 # Update a Action
-@app.route('/action', methods=['PUT'])
+@app.route('/Action', methods=['PUT'])
 def update_action():
   id = request.json['id']
   name = request.json['name']
@@ -413,7 +413,7 @@ def update_action():
   return action_schema.jsonify(action)
 
 # Delete Action
-@app.route('/action', methods=['DELETE'])
+@app.route('/Action', methods=['DELETE'])
 def delete_action():
   id = request.args.get('id')
 
@@ -424,7 +424,7 @@ def delete_action():
   return action_schema.jsonify(action)
 
 # Create a NestedAction
-@app.route('/nestedAction', methods=['POST'])
+@app.route('/NestedAction', methods=['POST'])
 def add_nestedAction():
   name = request.json['name']
   description = request.json['description']
@@ -441,14 +441,14 @@ def add_nestedAction():
   return nestedAction_schema.jsonify(new_nestedAction)
 
 # Get All NestedActions
-@app.route('/nestedActions', methods=['GET'])
+@app.route('/NestedActions', methods=['GET'])
 def get_nestedActions():
   all_nestedActions = NestedAction.query.all()
   result = nestedActions_schema.dump(all_nestedActions)
   return jsonify(result)
 
 # Get Single NestedAction
-@app.route('/nestedAction', methods=['GET'])
+@app.route('/NestedAction', methods=['GET'])
 def get_nestedAction():
   id = request.args.get('id')
 
@@ -456,7 +456,7 @@ def get_nestedAction():
   return nestedAction_schema.jsonify(nestedAction)
 
 # Update a NestedAction
-@app.route('/nestedAction', methods=['PUT'])
+@app.route('/NestedAction', methods=['PUT'])
 def update_nestedAction():
   id = request.json['id']
   name = request.json['name']
@@ -474,7 +474,7 @@ def update_nestedAction():
   return nestedAction_schema.jsonify(nestedAction)
 
 # Delete NestedAction
-@app.route('/nestedAction', methods=['DELETE'])
+@app.route('/NestedAction', methods=['DELETE'])
 def delete_nestedAction():
   id = request.args.get('id')
 
@@ -489,7 +489,7 @@ def delete_nestedAction():
 # Begin Advanced CRUD Operations (Specifically including filtering)
 
 # Get All Risks, associated with a particular project
-@app.route('/risks_from_project', methods=['GET'])
+@app.route('/Risks_from_project', methods=['GET'])
 def get_risks_from_project():
   project_id = request.args.get('project_id')
 
@@ -498,7 +498,7 @@ def get_risks_from_project():
   return jsonify(result)
 
 # Get All Issues, associated with a particular project
-@app.route('/issues_from_project', methods=['GET'])
+@app.route('/Issuess_from_project', methods=['GET'])
 def get_issues_from_project():
   project_id = request.args.get('project_id')
 
@@ -507,7 +507,7 @@ def get_issues_from_project():
   return jsonify(result)
 
 # Get All Actions, associated with a particular project
-@app.route('/actions_from_project', methods=['GET'])
+@app.route('/Actions_from_project', methods=['GET'])
 def get_actions_from_project():
   project_id = request.args.get('project_id')
 
@@ -516,7 +516,7 @@ def get_actions_from_project():
   return jsonify(result)
 
 # Get All NestedActions, that have the specified nestedAction as a parent
-@app.route('/nestedActions_from_parent', methods=['GET'])
+@app.route('/NestedActions_from_parent', methods=['GET'])
 def get_nestedActions_from_parent():
   parent_id = request.args.get('parent_id')
 
