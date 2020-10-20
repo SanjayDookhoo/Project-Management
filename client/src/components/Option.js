@@ -1,4 +1,7 @@
 import React, { Component } from 'react';
+import { withRouter } from 'react-router-dom'
+import { connect } from 'react-redux'
+import { selectProject } from '../actions/rootActions'
 
 class Option extends Component {
   shouldComponentUpdate(nextProps, nextState) {
@@ -11,28 +14,48 @@ class Option extends Component {
   }
   
   componentDidUpdate = () => {
-    console.log(new Date().toLocaleTimeString(),"OptionProject.js update")
+    console.log(new Date().toLocaleTimeString(),"Option.js update")
+  }
+
+  handleStartManagementClick = () => {
+    this.props.history.push('/project/risks')
+
+    this.props.selectProject(1)
   }
 
   render() {
-    const { color, category, selected, isVisible, handleEditOrCreateClick, handleDeleteClick, handleStartManagementClick } = this.props
+    const { color, category, selected, isVisible, handleEditOrCreateClick, handleDeleteClick,} = this.props
 
     let options = null
+
+    const buttonLayout = category === 'Project' ? ( 
+      <div className="row">
+        <div className="col s4 fwbtn">
+          <a className="waves-effect waves-light btn" onClick={handleEditOrCreateClick}><i className="material-icons left">edit</i>Edit {category === 'NestedAction' ? 'Nested Action' : category}</a>
+        </div>
+        <div className="col s4 fwbtn">
+          <a className="waves-effect waves-light btn" onClick={() => handleDeleteClick(selected)}><i className="material-icons left">delete</i>Delete {category === 'NestedAction' ? 'Nested Action' : category}</a>
+        </div>
+        <div className="col s4 fwbtn">
+          <a className="waves-effect waves-light btn" onClick={this.handleStartManagementClick}><i className="material-icons left">insert_chart</i>Start Management</a>
+        </div>
+      </div>
+    ) : ( 
+      <div className="row">
+        <div className="col s6 fwbtn">
+          <a className="waves-effect waves-light btn" onClick={handleEditOrCreateClick}><i className="material-icons left">edit</i>Edit {category === 'NestedAction' ? 'Nested Action' : category}</a>
+        </div>
+        <div className="col s6 fwbtn">
+          <a className="waves-effect waves-light btn" onClick={() => handleDeleteClick(selected)}><i className="material-icons left">delete</i>Delete {category === 'NestedAction' ? 'Nested Action' : category}</a>
+        </div>
+      </div>
+    )
+
     if (selected !== -1 && isVisible === true){
       options = (
         <div className={`post card white-text ${color}`}>
           <div className="card-content">
-            <div className="row">
-              <div className="col s4 fwbtn">
-                <a className="waves-effect waves-light btn" onClick={handleEditOrCreateClick}><i className="material-icons left">edit</i>Edit {category === 'NestedAction' ? 'Nested Action' : category}</a>
-              </div>
-              <div className="col s4 fwbtn">
-                <a className="waves-effect waves-light btn" onClick={() => handleDeleteClick(selected)}><i className="material-icons left">delete</i>Delete {category === 'NestedAction' ? 'Nested Action' : category}</a>
-              </div>
-              <div className="col s4 fwbtn">
-                <a className="waves-effect waves-light btn" onClick={handleStartManagementClick}><i className="material-icons left">insert_chart</i>Start Management</a>
-              </div>
-            </div>
+              {buttonLayout}
           </div>
         </div>
       )
@@ -59,4 +82,10 @@ class Option extends Component {
   }
 }
 
-export default Option;
+const mapDispatchToProps = (dispatch) => {
+  return {
+    selectProject: (id) => {dispatch(selectProject(id))}
+  }
+}
+
+export default connect(mapDispatchToProps)(withRouter(Option));

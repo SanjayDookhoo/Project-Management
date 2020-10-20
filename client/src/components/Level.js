@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import axios from 'axios'
-import { withRouter } from 'react-router-dom'
 import Edit from './Edit';
 import Option from './Option';
 import View from './View';
@@ -8,21 +7,37 @@ import View from './View';
 
 class Level extends Component {
   state = {
-    projects: [],
+    records: [],
     selected: -1,
     editOrCreate: false
   }
   
   componentDidMount = () => {
     let self = this //The callback in the axios function is called not from within your function, so the 'this' is not pointing to what you expect, i.e., your class.
-    axios.get(`${process.env.REACT_APP_API_URL}/${this.props.category}s`, {})
-    .then(function (response) {
-      if(response.status === 200){
-        self.setState({
-          projects: response.data
-        })
-      }
-    })
+    if(this.props.category !== 'Project'){
+      axios.get(`${process.env.REACT_APP_API_URL}/${this.props.category}s_from_project`, {
+        params: {
+          project_id: this.props.projectFilter
+        }
+      })
+      .then(function (response) {
+        if(response.status === 200){
+          self.setState({
+            records: response.data
+          })
+        }
+      })
+    }else{
+      axios.get(`${process.env.REACT_APP_API_URL}/${this.props.category}s`, {})
+      .then(function (response) {
+        if(response.status === 200){
+          self.setState({
+            records: response.data
+          })
+        }
+      })
+    }
+    
   }
 
   componentDidUpdate = () => {
@@ -49,19 +64,19 @@ class Level extends Component {
     })
   }
 
-  closeEditOrCreate = (rec_project) => {
-    if(rec_project!=='cancelled'){
-      if (this.state.projects.find(project => project.id === rec_project.id)){ //was a update
-        const newProjects = this.state.projects.filter(project => project.id !== rec_project.id)
+  closeEditOrCreate = (rec) => {
+    if(rec!=='cancelled'){
+      if (this.state.records.find(record => record.id === rec.id)){ //was a update
+        const newRecords = this.state.records.filter(record => record.id !== rec.id)
 
         this.setState({
           editOrCreate: false,
-          projects: [...newProjects,rec_project]
+          records: [...newRecords,rec]
         })
       }else{//was new
         this.setState({
           editOrCreate: false,
-          projects: [...this.state.projects,rec_project]
+          records: [...this.state.records,rec]
         })
       }
     }else{
@@ -82,17 +97,11 @@ class Level extends Component {
     .then(function (response) {
       if(response.status === 200){
         self.setState({
-          projects: self.state.projects.filter(project => project.id !== id),
+          records: self.state.records.filter(record => record.id !== id),
           selected: -1
         })
       }
     })
-  }
-
-  handleStartManagementClick = (id) => {
-    this.props.history.push('/project/risks')
-
-    /*need to set project selected in redux */
   }
 
   render() {
@@ -103,7 +112,7 @@ class Level extends Component {
           color = {this.props.color} 
 
           selected = {this.state.selected} 
-          projects = {this.state.projects} 
+          records = {this.state.records} 
           handleFocus = {this.handleFocus} 
           handleUnfocus= {this.handleUnfocus} 
         />
@@ -123,7 +132,7 @@ class Level extends Component {
           category = {this.props.category} 
           color = {this.props.color} 
           
-          project = { this.state.selected === -1 ? null : this.state.projects.find(project => project.id === this.state.selected) } 
+          project = { this.state.selected === -1 ? null : this.state.records.find(record => record.id === this.state.selected) } 
           ifCreate = {this.state.selected === -1 ? true : false}
           isVisible = {this.state.editOrCreate} 
           closeEditOrCreate = {this.closeEditOrCreate} 
@@ -133,5 +142,5 @@ class Level extends Component {
   }
 }
 
-export default withRouter( Level );
+export default Level;
 

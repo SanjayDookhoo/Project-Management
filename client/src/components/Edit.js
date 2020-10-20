@@ -1,17 +1,18 @@
 import React, { Component } from 'react';
 import axios from 'axios'
+import { connect } from 'react-redux'
 
 class Edit extends Component {
   shouldComponentUpdate(nextProps, nextState) {
-    if (this.props.project !== nextProps.project
+    if (this.props.record !== nextProps.record
       || this.props.ifCreate !== nextProps.ifCreate
       || this.props.isVisible !== nextProps.isVisible){
 
 
         this.setState({
-          name: this.props.project ? this.props.project.name : '',
-          description: this.props.project ? this.props.project.description : '',
-          status: this.props.project ? this.props.project.status : 0
+          name: this.props.record ? this.props.record.name : '',
+          description: this.props.record ? this.props.record.description : '',
+          status: this.props.record ? this.props.record.status : 0
         })
 
       return true;
@@ -25,7 +26,7 @@ class Edit extends Component {
   }
 
   componentDidUpdate = () => {
-    console.log(new Date().toLocaleTimeString(),"EditProject.js update")
+    console.log(new Date().toLocaleTimeString(),"Edit.js update")
   }
 
   state = {
@@ -40,15 +41,13 @@ class Edit extends Component {
     })
   }
 
-  handleSave = (e) => {
-    e.preventDefault();
-
+  handleSaveProject = (e) => {
     const { name, description, status} = this.state
     let self = this //The callback in the axios function is called not from within your function, so the 'this' is not pointing to what you expect, i.e., your class.
 
-    if(self.props.project){ //it will be a update
+    if(self.props.record){ //it will be a update
       axios.put(`${process.env.REACT_APP_API_URL}/${this.props.category}`, {
-        id: self.props.project.id,
+        id: self.props.record.id,
         name,
         description,
         status
@@ -70,6 +69,49 @@ class Edit extends Component {
         }
       })
     }
+  }
+
+  handleSaveOther = (e) => {
+    const { name, description, status} = this.state
+    let self = this //The callback in the axios function is called not from within your function, so the 'this' is not pointing to what you expect, i.e., your class.
+
+    if(self.props.project){ //it will be a update
+      axios.put(`${process.env.REACT_APP_API_URL}/${this.props.category}`, {
+        id: self.props.record.id,
+        name,
+        description,
+        status,
+        project_id: self.props.projectSelected
+      })
+      .then(function (response) {
+        if(response.status === 200){
+          self.props.closeEditOrCreate(response.data)
+        }
+      })
+    }else{ //it will be create
+      axios.post(`${process.env.REACT_APP_API_URL}/${this.props.category}`, {
+        name,
+        description,
+        status,
+        project_id: self.props.projectSelected
+      })
+      .then(function (response) {
+        if(response.status === 200){
+          self.props.closeEditOrCreate(response.data)
+        }
+      })
+    }
+  }
+
+  handleSave = (e) => {
+    e.preventDefault();
+
+    if(this.props.category === 'Project'){
+      this.handleSaveProject(e)
+    }else{
+      this.handleSaveOther(e)
+    }
+
     
   }
 
@@ -123,4 +165,10 @@ class Edit extends Component {
   }
 }
 
-export default Edit;
+const mapStateToProps = (state) => {
+  return {
+    projectSelected: state.projectSelected
+  }
+}
+
+export default connect(mapStateToProps)(Edit);

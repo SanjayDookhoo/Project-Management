@@ -294,7 +294,7 @@ def delete_risk():
   return risk_schema.jsonify(risk)
 
 # Create a Issue
-@app.route('/Issues', methods=['POST'])
+@app.route('/Issue', methods=['POST'])
 def add_issue():
   name = request.json['name']
   description = request.json['description']
@@ -315,14 +315,14 @@ def add_issue():
   return issue_schema.jsonify(new_issue)
 
 # Get All Issues
-@app.route('/Issuess', methods=['GET'])
+@app.route('/Issues', methods=['GET'])
 def get_issues():
   all_issues = Issue.query.all()
   result = issues_schema.dump(all_issues)
   return jsonify(result)
 
 # Get Single Issue
-@app.route('/Issues', methods=['GET'])
+@app.route('/Issue', methods=['GET'])
 def get_issue():
   id = request.args.get('id')
 
@@ -330,7 +330,7 @@ def get_issue():
   return issue_schema.jsonify(issue)
 
 # Update a Issue
-@app.route('/Issues', methods=['PUT'])
+@app.route('/Issue', methods=['PUT'])
 def update_issue():
   id = request.json['id']
   name = request.json['name']
@@ -348,7 +348,7 @@ def update_issue():
   return issue_schema.jsonify(issue)
 
 # Delete Issue
-@app.route('/Issues', methods=['DELETE'])
+@app.route('/Issue', methods=['DELETE'])
 def delete_issue():
   id = request.args.get('id')
 
@@ -498,7 +498,7 @@ def get_risks_from_project():
   return jsonify(result)
 
 # Get All Issues, associated with a particular project
-@app.route('/Issuess_from_project', methods=['GET'])
+@app.route('/Issues_from_project', methods=['GET'])
 def get_issues_from_project():
   project_id = request.args.get('project_id')
 

@@ -3,7 +3,7 @@ import React, { Component} from 'react';
 class View extends Component {
   shouldComponentUpdate(nextProps, nextState) {
     if (this.props.selected === nextProps.selected &&
-      this.props.projects === nextProps.projects){
+      this.props.records === nextProps.records){
       return false;
     } else {
       return true;
@@ -15,7 +15,7 @@ class View extends Component {
   }
 
   renderTableData() {
-    return this.props.projects.map((project, index) => {
+    return this.props.records.map((project, index) => {
        const { id, name, description, status } = project
 
        return (
@@ -35,10 +35,10 @@ class View extends Component {
   render() {
     let view = null
 
-    const { color, category, selected, projects } = this.props
+    const { color, category, selected, records } = this.props
     
     if(selected !== -1){
-      const projectName = projects.find(project => project.id === selected).name
+      const projectName = records.find(project => project.id === selected).name
 
       view = (
         <div>
@@ -54,7 +54,7 @@ class View extends Component {
         </div>
       )
     }else{
-      view = this.props.projects.length ? (
+      view = this.props.records.length ? (
         <div>
           <div className={`post card white-text ${color}`}> 
             <div className="card-content"> 
