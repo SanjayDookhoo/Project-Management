@@ -24,7 +24,7 @@ class Option extends Component {
   }
 
   render() {
-    const { color, category, selected, isVisible, handleEditOrCreateClick, handleDeleteClick,} = this.props
+    const { color, category, selected, isVisible, handleEditOrCreateClick, handleDeleteRecord,} = this.props
 
     let options = null
 
@@ -34,7 +34,7 @@ class Option extends Component {
           <a className="waves-effect waves-light btn" onClick={handleEditOrCreateClick}><i className="material-icons left">edit</i>Edit {category === 'NestedAction' ? 'Nested Action' : category}</a>
         </div>
         <div className="col s4 fwbtn">
-          <a className="waves-effect waves-light btn" onClick={() => handleDeleteClick(selected)}><i className="material-icons left">delete</i>Delete {category === 'NestedAction' ? 'Nested Action' : category}</a>
+          <a className="waves-effect waves-light btn" onClick={() => handleDeleteRecord(selected)}><i className="material-icons left">delete</i>Delete {category === 'NestedAction' ? 'Nested Action' : category}</a>
         </div>
         <div className="col s4 fwbtn">
           <a className="waves-effect waves-light btn" onClick={this.handleStartManagementClick}><i className="material-icons left">insert_chart</i>Start Management</a>
@@ -46,7 +46,7 @@ class Option extends Component {
           <a className="waves-effect waves-light btn" onClick={handleEditOrCreateClick}><i className="material-icons left">edit</i>Edit {category === 'NestedAction' ? 'Nested Action' : category}</a>
         </div>
         <div className="col s6 fwbtn">
-          <a className="waves-effect waves-light btn" onClick={() => handleDeleteClick(selected)}><i className="material-icons left">delete</i>Delete {category === 'NestedAction' ? 'Nested Action' : category}</a>
+          <a className="waves-effect waves-light btn" onClick={() => handleDeleteRecord(selected)}><i className="material-icons left">delete</i>Delete {category === 'NestedAction' ? 'Nested Action' : category}</a>
         </div>
       </div>
     )

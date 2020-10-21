@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Level from './Level';
+import Level from './Depth';
 import { connect } from 'react-redux'
 
 class Levels extends Component {

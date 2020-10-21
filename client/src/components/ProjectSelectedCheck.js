@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 
 class ProjectSelectedCheck extends Component {
   componentDidMount = () => {
-    if (this.props.projectSelected === null){
+    if (this.props.amtOfProjects === 0){
       this.props.history.push('/')
     }
   }
@@ -18,7 +18,7 @@ class ProjectSelectedCheck extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    projectSelected: state.Project.selected
+    amtOfProjects: state.Project.length
   }
 }
 
