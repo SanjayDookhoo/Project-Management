@@ -3,7 +3,7 @@ import Level from './Level';
 import { connect } from 'react-redux'
 
 class Levels extends Component {
-  colorSelector(category, level=1) {
+  colorSelector(category, level=0) {
     let color = null
     let colorRange = ['darken-4','darken-3','darken-2','darken-1','','lighten-1','lighten-2','lighten-3','lighten-4','lighten-5'] //materialize color range
 
@@ -15,31 +15,54 @@ class Levels extends Component {
       color = 'orange'
     }else if(category === 'Action'){
       color = 'blue'
-    }else if(category === 'Nested Action'){
-      color = 'gray'
+    }else if(category === 'NestedAction'){
+      color = 'grey'
     }
-    return color + ' ' + colorRange[level-1]
+
+    return level <= 10 ? ( 
+      color + ' ' + colorRange[level]
+    ) : (
+      color + ' ' + colorRange[9] // highest assignable color alteration
+    )
   }
 
   render() {
-    const { projectSelected, category } = this.props
-    let color = null
+    const { mainCategoryIsFocused, projectSelected, nestedActions, category } = this.props
     let firstLevel = null
-    
-    color = this.colorSelector(category)
+    let firstLevelColor = null
+
+    let otherLevelsList = nestedActions.map( (nestedAction, index) => {
+      return(
+        <div key={index+1}>
+          <Level
+            level={index+1}
+            nestedActionFilter={nestedAction}
+            origin={category}
+            category='NestedAction'
+            color={this.colorSelector('NestedAction',index)}
+          />
+        </div>
+      )
+    })
+
+    firstLevelColor = this.colorSelector(category)
     if(category === 'Project'){
       firstLevel = (
         <Level
+          level={0}
+          origin={category}
           category={category}
-          color={color}
+          color={firstLevelColor}
         />
       )
     }else{
       firstLevel = (
         <Level
+          level={0}
+          origin={category}
           category={category}
           projectFilter={projectSelected}
-          color={color}
+          color={firstLevelColor}
         />
       )
     }
@@ -47,14 +70,17 @@ class Levels extends Component {
     return (
       <div>
         {firstLevel}
+        {category !== 'Project' &&  mainCategoryIsFocused != null ? otherLevelsList : null}
       </div>
     )
   }
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state, ownProps) => {
   return {
-    projectSelected: state.projectSelected
+    nestedActions: state[ownProps.category].nestedActions,
+    mainCategoryIsFocused: state[ownProps.category].selected,
+    projectSelected: state.Project.selected
   }
 }
 

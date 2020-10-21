@@ -33,10 +33,10 @@ class Project(db.Model):
   issues = db.relationship("Issue", back_populates = "project", cascade = "all, delete, delete-orphan")
   actions = db.relationship("Action", back_populates = "project", cascade = "all, delete, delete-orphan")
 
-  def __init__(self, name, description):
+  def __init__(self, name, description, status):
     self.name = name
     self.description = description
-    self.status = 0
+    self.status = status
     self.createdTimestamp = datetime.datetime.now()
 
 class Risk(db.Model):
@@ -55,10 +55,10 @@ class Risk(db.Model):
   nestedAction_id = db.Column(db.Integer, db.ForeignKey('nestedAction.id'))
   nestedAction = db.relationship("NestedAction", back_populates = "risk", cascade = "all, delete, delete-orphan", single_parent = True)
 
-  def __init__(self, name, description, project_id, nestedAction_id):
+  def __init__(self, name, description, status, project_id, nestedAction_id):
     self.name = name
     self.description = description
-    self.status = 0
+    self.status = status
     self.project_id = project_id
     self.nestedAction_id = nestedAction_id
     self.createdTimestamp = datetime.datetime.now()
@@ -79,10 +79,10 @@ class Issue(db.Model):
   nestedAction_id = db.Column(db.Integer, db.ForeignKey('nestedAction.id'), nullable=False)
   nestedAction = db.relationship("NestedAction", back_populates = "issue", cascade = "all, delete, delete-orphan", single_parent = True)
 
-  def __init__(self, name, description, project_id, nestedAction_id):
+  def __init__(self, name, description, status, project_id, nestedAction_id):
     self.name = name
     self.description = description
-    self.status = 0
+    self.status = status
     self.project_id = project_id
     self.nestedAction_id = nestedAction_id
     self.createdTimestamp = datetime.datetime.now()
@@ -103,10 +103,10 @@ class Action(db.Model):
   nestedAction_id = db.Column(db.Integer, db.ForeignKey('nestedAction.id'), nullable=False)
   nestedAction = db.relationship("NestedAction", back_populates = "action", cascade = "all, delete, delete-orphan", single_parent = True)
 
-  def __init__(self, name, description, project_id, nestedAction_id):
+  def __init__(self, name, description, status, project_id, nestedAction_id):
     self.name = name
     self.description = description
-    self.status = 0
+    self.status = status
     self.project_id = project_id
     self.nestedAction_id = nestedAction_id
     self.createdTimestamp = datetime.datetime.now()
@@ -127,10 +127,10 @@ class NestedAction(db.Model):
   issue = db.relationship("Issue", back_populates = "nestedAction")
   action = db.relationship("Action", back_populates = "nestedAction")
 
-  def __init__(self, name = "<used as link>", description = "<used as link>", parent_id = db.null()):
+  def __init__(self, name = "<used as link>", description = "<used as link>", status=0, parent_id = db.null()):
     self.name = name
     self.description = description
-    self.status = 0
+    self.status = status
     self.parent_id = parent_id
     self.createdTimestamp = datetime.datetime.now()
 
@@ -176,8 +176,9 @@ nestedActions_schema = NestedActionSchema(many=True)
 def add_project():
   name = request.json['name']
   description = request.json['description']
+  status = request.json['status']
 
-  new_project = Project(name, description)
+  new_project = Project(name, description, status)
 
   db.session.add(new_project)
   db.session.commit()
@@ -233,6 +234,7 @@ def delete_project():
 def add_risk():
   name = request.json['name']
   description = request.json['description']
+  status = request.json['status']
   project_id = request.json['project_id']
 
   # create nestedAction to allow starting of nestedActions
@@ -242,7 +244,7 @@ def add_risk():
 
   nestedAction_id = new_nestedAction.id
 
-  new_risk = Risk(name, description, project_id, nestedAction_id)
+  new_risk = Risk(name, description, status, project_id, nestedAction_id)
 
   db.session.add(new_risk)
   db.session.commit()
@@ -298,6 +300,7 @@ def delete_risk():
 def add_issue():
   name = request.json['name']
   description = request.json['description']
+  status = request.json['status']
   project_id = request.json['project_id']
 
   # create nestedAction to allow starting of nestedActions
@@ -307,7 +310,7 @@ def add_issue():
 
   nestedAction_id = new_nestedAction.id
 
-  new_issue = Issue(name, description, project_id, nestedAction_id)
+  new_issue = Issue(name, description, status, project_id, nestedAction_id)
 
   db.session.add(new_issue)
   db.session.commit()
@@ -363,6 +366,7 @@ def delete_issue():
 def add_action():
   name = request.json['name']
   description = request.json['description']
+  status = request.json['status']
   project_id = request.json['project_id']
 
   # create nestedAction to allow starting of nestedActions
@@ -372,7 +376,7 @@ def add_action():
 
   nestedAction_id = new_nestedAction.id
 
-  new_action = Action(name, description, project_id, nestedAction_id)
+  new_action = Action(name, description, status, project_id, nestedAction_id)
 
   db.session.add(new_action)
   db.session.commit()
@@ -428,12 +432,13 @@ def delete_action():
 def add_nestedAction():
   name = request.json['name']
   description = request.json['description']
+  status = request.json['status']
 
   if ('parent_id' in request.json):
     parent_id = request.json['parent_id']
-    new_nestedAction = NestedAction(name, description, parent_id)
+    new_nestedAction = NestedAction(name, description, status, parent_id)
   else:
-    new_nestedAction = NestedAction(name, description)
+    new_nestedAction = NestedAction(name, description, status)
 
   db.session.add(new_nestedAction)
   db.session.commit()
@@ -519,10 +524,20 @@ def get_actions_from_project():
 @app.route('/NestedActions_from_parent', methods=['GET'])
 def get_nestedActions_from_parent():
   parent_id = request.args.get('parent_id')
+  first = request.args.get('first')
 
+  # if(first):
+  #   new_parent_id = NestedAction.query.filter(NestedAction.parent_id == parent_id).first().id
+
+  #   all_nestedActions = NestedAction.query.filter(NestedAction.parent_id == new_parent_id).all()
+  #   result = nestedActions_schema.dump(all_nestedActions)
+  #   return jsonify(result)
+  # else:
   all_nestedActions = NestedAction.query.filter(NestedAction.parent_id == parent_id).all()
   result = nestedActions_schema.dump(all_nestedActions)
   return jsonify(result)
+  
+  
 
 # End Advanced CRUD Operations (Specifically including filtering)
 

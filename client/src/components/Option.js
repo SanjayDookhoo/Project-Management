@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
-import { selectProject } from '../actions/rootActions'
+import { selectCategory } from '../actions/rootActions'
 
 class Option extends Component {
   shouldComponentUpdate(nextProps, nextState) {
@@ -18,9 +18,9 @@ class Option extends Component {
   }
 
   handleStartManagementClick = () => {
-    this.props.history.push('/project/risks')
+    this.props.selectCategory(this.props.selected,this.props.category)
 
-    this.props.selectProject(1)
+    this.props.history.push('/project/risks')
   }
 
   render() {
@@ -82,10 +82,14 @@ class Option extends Component {
   }
 }
 
+const mapStateToProps = (state, ownProps) => {
+  return {}
+}
+
 const mapDispatchToProps = (dispatch) => {
   return {
-    selectProject: (id) => {dispatch(selectProject(id))}
+    selectCategory: (id,category) => { dispatch(selectCategory(id,category)) }
   }
 }
 
-export default connect(mapDispatchToProps)(withRouter(Option));
+export default connect(mapStateToProps,mapDispatchToProps)(withRouter(Option));

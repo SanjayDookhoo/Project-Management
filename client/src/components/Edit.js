@@ -71,6 +71,38 @@ class Edit extends Component {
     }
   }
 
+  handleSaveNestedAction = (e) => {
+    const { name, description, status} = this.state
+    let self = this //The callback in the axios function is called not from within your function, so the 'this' is not pointing to what you expect, i.e., your class.
+
+    if(self.props.record){ //it will be a update
+      axios.put(`${process.env.REACT_APP_API_URL}/${this.props.category}`, {
+        id: self.props.record.id,
+        name,
+        description,
+        status,
+        parent_id: this.props.parent_id
+      })
+      .then(function (response) {
+        if(response.status === 200){
+          self.props.closeEditOrCreate(response.data)
+        }
+      })
+    }else{ //it will be create
+      axios.post(`${process.env.REACT_APP_API_URL}/${this.props.category}`, {
+        name,
+        description,
+        status,
+        parent_id: this.props.parent_id
+      })
+      .then(function (response) {
+        if(response.status === 200){
+          self.props.closeEditOrCreate(response.data)
+        }
+      })
+    }
+  }
+
   handleSaveOther = (e) => {
     const { name, description, status} = this.state
     let self = this //The callback in the axios function is called not from within your function, so the 'this' is not pointing to what you expect, i.e., your class.
@@ -108,6 +140,8 @@ class Edit extends Component {
 
     if(this.props.category === 'Project'){
       this.handleSaveProject(e)
+    }else if(this.props.category === 'NestedAction'){
+      this.handleSaveNestedAction(e)
     }else{
       this.handleSaveOther(e)
     }
@@ -165,9 +199,11 @@ class Edit extends Component {
   }
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state, ownProps) => {
+  console.log(state[ownProps.origin].nestedActions.reverse())
   return {
-    projectSelected: state.projectSelected
+    projectSelected: state.Project.selected,
+    parent_id: ownProps.category === 'NestedAction' ? state[ownProps.origin].nestedActions.reverse()[0].id : null
   }
 }
 

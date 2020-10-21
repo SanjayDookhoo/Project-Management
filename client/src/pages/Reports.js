@@ -1,10 +1,13 @@
 import React, { Component } from 'react';
+import ProjectSelectedCheck from '../components/ProjectSelectedCheck'
 
 class Reports extends Component {
   render() {
     return (
         <div>
-          Reports
+          <ProjectSelectedCheck>
+            Reports
+          </ProjectSelectedCheck>
         </div>
     );
   }
