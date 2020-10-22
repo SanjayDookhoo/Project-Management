@@ -1,9 +1,10 @@
-export const changeSelected = (category, depth, value) => {
+export const changeSelected = (category, depth, value, nestedAction_id = null) => {
   return {
     type: 'CHANGE_SELECTED',
     value,
     depth,
-    category
+    category,
+    nestedAction_id
   }
 }
 
@@ -22,5 +23,15 @@ export const changeOption = (category, depth, value) => {
     value,
     depth,
     category
+  }
+}
+
+export const changeDelete = (category, depth, value, success=false) => {
+  return {
+    type: 'CHANGE_DELETE',
+    value,
+    depth,
+    category,
+    success
   }
 }

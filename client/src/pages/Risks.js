@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import Levels from '../components/Levels';
 import ProjectSelectedCheck from '../components/ProjectSelectedCheck'
 import Category from '../components/Category';
 
@@ -8,10 +7,6 @@ class Risks extends Component {
     return (
         <div>
           <ProjectSelectedCheck>
-            {/* <Levels
-              category="Risk"
-            /> */}
-
             <Category
               category="Risk"
             />

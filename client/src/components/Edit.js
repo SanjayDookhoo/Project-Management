@@ -1,28 +1,29 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux'
-import { changeEdit } from '../actions/rootActions'
+import { changeEdit, changeOption } from '../actions/rootActions'
 
 class Edit extends Component {
-  componentDidUpdate = () => {
+  componentDidUpdate = (prevProps) => {
     console.log(new Date().toLocaleTimeString(),"Edit.js update")
-  }
 
-  componentDidMount = () => {
-    if(this.props.record){
-      const { name, description, status } = this.props
-
-      this.setState({
-        name,
-        description,
-        status
-      })
+    if(this.props.record != prevProps.record){
+      if(this.props.record){
+        const { name, description, status } = this.props.record
+  
+        this.setState({
+          name,
+          description,
+          status
+        })
+      }
     }
   }
 
   state = {
     name: '',
     description: '',
-    status: 0
+    status: 0,
+
   }
 
   handleChange = (e) => {
@@ -33,30 +34,34 @@ class Edit extends Component {
 
   handleSave = (e) => {
     e.preventDefault();
+    const { category, depth, handleModifyRecord, handleNewRecord } = this.props
+    const { modifyOrCreate, changeEdit_, changeOption_ } = this.props
 
-    if(editOrModify === 'edit'){
-      changeEdit(category, depth, false)
-
+    if(modifyOrCreate === 'modify'){
+      changeEdit_(category, depth, false)
+      changeOption_(category, depth, true)
       handleModifyRecord(this.state)
     }else{
-      changeEdit(category, depth, false)
-
+      changeEdit_(category, depth, false)
+      changeOption_(category, depth, true)
       handleNewRecord(this.state)
     }
   }
 
   handleCancel = () => {
     const { depth, category } = this.props
-    const { changeEdit } = this.props
+    const { changeEdit_, changeOption_ } = this.props
     
-    changeEdit(category, depth, false)
+    changeEdit_(category, depth, false)
+    changeOption_(category, depth, true)
   }
 
   render() {
     const { name, description, status } = this.state
-    const { color, category } = this.props
+    const { color, category, depth, editOrModify } = this.props
+    const { edit } = this.props
 
-    if(this.props.isVisible === true){
+    if(edit){
       return(
         <div className={`post card white-text ${color}`}> 
           <form onSubmit={this.handleSave}>
@@ -78,9 +83,9 @@ class Edit extends Component {
                 <div className="col s6 fwbtn">
                   {/* if updating or creating a new, the final confirmation button will be a reflection of the task being done */}
                   { this.props.project ? (
-                      <button className="waves-effect waves-light btn" type="submit" name="action"><i className="material-icons left">save</i>Save {category === 'NestedAction' ? 'Nested Action' : category}</button>
+                      <button className="waves-effect waves-light btn" type="submit" name="action"><i className="material-icons left">save</i>Save {depth !== 1 ? 'Nested Action' : category}</button>
                     ) : (
-                      <button className="waves-effect waves-light btn" type="submit" name="action"><i className="material-icons left">create</i>Create {category === 'NestedAction' ? 'Nested Action' : category}</button>
+                      <button className="waves-effect waves-light btn" type="submit" name="action"><i className="material-icons left">create</i> {editOrModify === 'modify' ? 'Edit' : 'Create'} {depth !== 1 ? 'Nested Action' : category}</button>
                     )
                   }
                 </div>
@@ -102,13 +107,15 @@ const mapStateToProps = (state, ownProps) => {
   const { category, depth } = ownProps
 
   return {
-    editOrModify: state[category].find(cat => cat.depth === depth).selected === -1 ? 'edit' : 'modify'
+    edit: state[category].find(cat => cat.depth === depth).edit,
+    editOrModify: state[category].find(cat => cat.depth === depth).selected !== -1 ? 'modify' : 'create',
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    changeEdit: (category, depth, value) => { dispatch(changeEdit(category, depth, value)) },
+    changeEdit_: (category, depth, value) => { dispatch(changeEdit(category, depth, value)) },
+    changeOption_: (category, depth, value) => { dispatch(changeOption(category, depth, value)) },
   }
 }
 

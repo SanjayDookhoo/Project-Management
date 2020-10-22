@@ -1,17 +1,31 @@
 import React, { Component} from 'react';
+import { connect } from 'react-redux'
+import { changeSelected } from '../actions/rootActions'
 
 class View extends Component {
-  shouldComponentUpdate(nextProps, nextState) {
-    if (this.props.selected === nextProps.selected &&
-      this.props.records === nextProps.records){
-      return false;
-    } else {
-      return true;
-    }
-  }
-
   componentDidUpdate = () => {
     console.log(new Date().toLocaleTimeString(),"ViewProject.js update")
+  }
+
+  handleFocus = (id) => {
+    const { category, depth, records } = this.props
+    const { changeSelected_ } = this.props
+    let nestedAction_id = null
+    if(depth == 1){
+      console.log(records.find(rec => rec.id == id))
+      nestedAction_id = records.find(rec => rec.id == id).nestedAction_id
+    }else{
+      nestedAction_id = id
+    }
+    
+    changeSelected_(category, depth, id, nestedAction_id)
+  }
+
+  handleUnfocus = () => {
+    const { category, depth } = this.props
+    const { changeSelected_ } = this.props
+
+    changeSelected_(category, depth, -1)
   }
 
   renderTableData() {
@@ -19,7 +33,7 @@ class View extends Component {
        const { id, name, description, status } = project
 
        return (
-          <tr className="hoverable" key={id} onClick={() => this.props.handleFocus(id)}>
+          <tr className="hoverable" key={id} onClick={() => this.handleFocus(id)}>
              <td>{name}</td>
              <td>{description}</td>
              <td> <div className="center"> {status} % </div>
@@ -43,7 +57,7 @@ class View extends Component {
       view = (
         <div>
           <div className={`post card white-text ${color}`}> 
-            <div className="card-content" onClick={this.props.handleUnfocus}> 
+            <div className="card-content" onClick={this.handleUnfocus}> 
               <div className={`post card white-text ${color} hoverable`}> 
                 <div className="card-content">
                   <h5> <b>Selected: </b> {projectName} </h5>
@@ -88,4 +102,16 @@ class View extends Component {
   }
 }
 
-export default View;
+const mapStateToProps = (state, ownProps) => {
+  return {
+    selected: state[ownProps.category].find(cat => cat.depth === ownProps.depth).selected,
+  }
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    changeSelected_: (category, depth, value, nestedAction_id) => { dispatch(changeSelected(category, depth, value, nestedAction_id)) },
+  }
+}
+
+export default connect(mapStateToProps,mapDispatchToProps)(View);

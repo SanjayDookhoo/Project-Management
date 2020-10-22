@@ -3,12 +3,14 @@ import axios from 'axios'
 import Edit from './Edit';
 import Option from './Option';
 import View from './View';
+import Delete from './Delete';
 import { connect } from 'react-redux'
-import { selectCategory, unselectCategory, selectNestedAction, unselectNestedAction } from '../actions/rootActions'
+
 
 class Depth extends Component {
   state = {
-    records: []
+    records: [],
+    dataRetrieved: false
   }
 
   handleGetRecords = () => {
@@ -16,18 +18,19 @@ class Depth extends Component {
     const { projectFilter } = this.props 
     let self = this //The callback in the axios function is called not from within your function, so the 'this' is not pointing to what you expect, i.e., your class.
 
-    if(category === 'NestedAction'){
-      const { nestedActionParentId } = this.props 
+    if(depth >= 2){
+      const { nestedAction_id } = this.props 
 
       axios.get(`${process.env.REACT_APP_API_URL}/NestedActions_from_parent`, {
         params: {
-          parent_id: nestedActionParentId
+          parent_id: nestedAction_id
         }
       })
       .then(function (response) {
         if(response.status === 200){
           self.setState({
-            records: response.data
+            records: response.data,
+            dataRetrieved: true,
           })
         }
       })
@@ -40,7 +43,8 @@ class Depth extends Component {
       .then(function (response) {
         if(response.status === 200){
           self.setState({
-            records: response.data
+            records: response.data,
+            dataRetrieved: true,
           })
         }
       })
@@ -49,7 +53,8 @@ class Depth extends Component {
       .then(function (response) {
         if(response.status === 200){
           self.setState({
-            records: response.data
+            records: response.data,
+            dataRetrieved: true,
           })
         }
       })
@@ -57,28 +62,62 @@ class Depth extends Component {
   }
 
   handleNewRecord = (rec) => {
-    axios.post(`${process.env.REACT_APP_API_URL}/${this.props.category}`, {
-      name,
-      description,
-      status
-    })
-    .then(function (response) {
-      if(response.status === 200){
-        this.setState({
-          records: [...newRecords,response.data]
-        })
-      }
-    })
-
-    this.setState({
-      records: [...this.state.records,rec]
-    })
+    let self = this //The callback in the axios function is called not from within your function, so the 'this' is not pointing to what you expect, i.e., your class.
+console.log(rec)
+    if(this.props.depth === 0){
+      const { name, description, status} = rec
+      axios.post(`${process.env.REACT_APP_API_URL}/${self.props.category}`, {
+        name,
+        description,
+        status
+      })
+      .then(function (response) {
+        if(response.status === 200){
+          self.setState({
+            records: [...self.state.records,response.data]
+          })
+        }
+      })
+    }else if(this.props.depth === 1){
+      const { name, description, status} = rec
+      axios.post(`${process.env.REACT_APP_API_URL}/${self.props.category}`, {
+        name,
+        description,
+        status,
+        project_id: self.props.projectFilter
+      })
+      .then(function (response) {
+        if(response.status === 200){
+          self.setState({
+            records: [...self.state.records,response.data]
+          })
+        }
+      })
+    }else if(this.props.depth >= 2){
+      const { name, description, status} = rec
+      axios.post(`${process.env.REACT_APP_API_URL}/NestedAction`, {
+        name,
+        description,
+        status,
+        parent_id: self.props.nestedAction_id
+      })
+      .then(function (response) {
+        if(response.status === 200){
+          self.setState({
+            records: [...self.state.records,response.data]
+          })
+        }
+      })
+    }
   }
 
   handleModifyRecord = (rec) => {
-    const id = this.state.records.find(record => record.id == selected).id
+    let self = this //The callback in the axios function is called not from within your function, so the 'this' is not pointing to what you expect, i.e., your class.
+    const { id, name, description, status} = rec
 
-    axios.put(`${process.env.REACT_APP_API_URL}/${this.props.category}`, {
+    const modifyFrom = this.props.depth === 1 ? this.props.category : 'NestedAction'
+
+    axios.put(`${process.env.REACT_APP_API_URL}/${modifyFrom}`, {
       id,
       name,
       description,
@@ -86,8 +125,8 @@ class Depth extends Component {
     })
     .then(function (response) {
       if(response.status === 200){
-        this.setState({
-          records: [...newRecords,response.data]
+        self.setState({
+          records: [...self.state.records,response.data]
         })
       }
     })
@@ -96,7 +135,9 @@ class Depth extends Component {
   handleDeleteRecord = (id) => {
     let self = this //The callback in the axios function is called not from within your function, so the 'this' is not pointing to what you expect, i.e., your class.
 
-    axios.delete(`${process.env.REACT_APP_API_URL}/${this.props.category}`, {
+    const deleteFrom = this.props.depth === 1 ? this.props.category : 'NestedAction'
+
+    axios.delete(`${process.env.REACT_APP_API_URL}/${deleteFrom}`, {
       params: {
         id
       }
@@ -119,60 +160,25 @@ class Depth extends Component {
     console.log(new Date().toLocaleTimeString(),"ContainerProject.js update")
   }
 
-  handleUnfocus = () => {
-    this.setState({
-      selected: -1,
-      editOrCreate: false
-    })
-    if(this.props.category !== 'NestedAction'){
-      this.props.unselectCategory(this.props.category)
-    }
-
-    if(this.props.category !== 'NestedAction' && this.props.category !== 'Project'){
-      this.props.unselectNestedAction(this.props.level+1,this.props.origin)
-    }else if (this.props.category === 'NestedAction'){
-      this.props.unselectNestedAction(this.props.level+1,this.props.origin)
-    
-    }
-  }
-
-  handleFocus = (id) => {
-    this.setState({
-      selected: id,
-      editOrCreate: false
-    })
-    let nestedAction = null
-
-    if(this.props.category !== 'NestedAction'){
-      this.props.selectCategory(id,this.props.category)
-    }
-    
-    if(this.props.category !== 'NestedAction' && this.props.category !== 'Project'){
-      nestedAction = this.state.records.find(record => record.id === id).nestedAction_id
-      this.props.selectNestedAction(nestedAction,this.props.level+1,this.props.origin)
-    }else if (this.props.category === 'NestedAction'){
-      this.props.selectNestedAction(id,this.props.level+1,this.props.origin)
-    }
-  }
-
-
   colorSelector(category, depth=0) {
     let color = null
     let colorRange = ['darken-4','darken-3','darken-2','darken-1','','lighten-1','lighten-2','lighten-3','lighten-4','lighten-5'] //materialize color range
 
-    if(category === 'Project'){
-      color = 'purple'
-    }else if(category === 'Risk'){
-      color = 'red'
-    }else if(category === 'Issue'){
-      color = 'orange'
-    }else if(category === 'Action'){
-      color = 'blue'
-    }else if(category === 'NestedAction'){
-      color = 'grey'
+    if(depth==1){
+      if(category === 'Project'){
+        color = 'purple'
+      }else if(category === 'Risk'){
+        color = 'red'
+      }else if(category === 'Issue'){
+        color = 'orange'
+      }else if(category === 'Action'){
+        color = 'blue'
+      }
+    }else{
+      color = 'pink'
     }
 
-    return level <= 10 ? ( 
+    return depth <= 9 ? ( 
       color + ' ' + colorRange[depth]
     ) : (
       color + ' ' + colorRange[9] // highest assignable color alteration
@@ -185,65 +191,70 @@ class Depth extends Component {
 
     const color = this.colorSelector(category, depth)
 
-    return (
-      <div>
-        <View
-          category = {category} 
-          depth = {depth} 
+    if(this.state.dataRetrieved){
+      return (
+        <div>
+          <View
+            category = {category} 
+            depth = {depth} 
 
-          color = {color}
+            color = {color}
 
-          records = {this.state.records} 
-          handleFocus = {this.handleFocus} 
-          handleUnfocus= {this.handleUnfocus} 
-        />
+            records = {this.state.records} 
+          />
 
-        <Option
-          category = {category} 
-          depth = {depth} 
+          <Option
+            category = {category} 
+            depth = {depth} 
 
-          color = {color} 
-          
-          handleEditOrCreateClick = {this.handleEditOrCreateClick} 
-          handleDeleteRecord = {this.handleDeleteRecord} 
-        />
+            color = {color} 
+          />
 
-        <Edit
-          category = {category} 
-          depth = {depth} 
+          <Edit
+            category = {category} 
+            depth = {depth} 
 
-          color = {color} 
-          
-          record = {this.state.records.find(record => record.id == selected)} 
-          
-          closeEditOrCreate = {this.closeEditOrCreate} 
-        />
-      </div>
-    )
+            color = {color} 
+            
+            record = {this.state.records.find(record => record.id == selected)} 
+            
+            handleNewRecord = {this.handleNewRecord} 
+            handleModifyRecord = {this.handleModifyRecord} 
+          />
+
+          <Delete
+            category = {category} 
+            depth = {depth} 
+
+            color = {color} 
+            
+            handleDeleteRecord = {this.handleDeleteRecord} 
+          />
+        </div>
+      )
+    }else{
+      return (
+        <div>Waiting on data </div>
+      )
+    }
   }
 }
 
 const mapStateToProps = (state, ownProps) => {
 return {
-    selected: state[ownProps.category].selected,
-    edit: state[ownProps.category].edit,
-    option: state[ownProps.category].option,
+    selected: state[ownProps.category].find(cat => cat.depth === ownProps.depth).selected,
+    edit: state[ownProps.category].find(cat => cat.depth === ownProps.depth).edit,
+    option: state[ownProps.category].find(cat => cat.depth === ownProps.depth).option,
 
-    projectFilter: state.Project[0].selected, //only one or no project will ever exist in the list, only one will exist once this component can be reached
-    ...(ownProps.category === 'NestedAction' && ownProps.depth === 2) && { nestedActionParentId: state[ownProps.category].find(cat => cat.depth === 1).nestedAction_id },
-    ...(ownProps.category === 'NestedAction' && ownProps.depth > 2 ) && { nestedActionParentId: state[ownProps.category].find(cat => cat.depth === ownProps.depth-1).id },
+    ...(ownProps.category !== 'Project') && {projectFilter: state.Project[0].selected}, //only one or no project will ever exist in the list, only one will exist once this component can be reached
+    ...(ownProps.depth >= 2) && { nestedAction_id: state[ownProps.category].find(cat => cat.depth === ownProps.depth).nestedAction_id },
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    selectCategory: (id, category) => { dispatch(selectCategory(id, category)) },
-    unselectCategory: (category) => { dispatch(unselectCategory(category)) },
-    selectNestedAction: (id, level, category) => { dispatch(selectNestedAction(id, level, category)) },
-    unselectNestedAction: (id, level, category) => { dispatch(unselectNestedAction(id, level, category)) }
+
   }
 }
 
 export default connect(mapStateToProps,mapDispatchToProps)(Depth);
-
-

@@ -1,16 +1,13 @@
 import React, { Component } from 'react';
-import Levels from '../components/Levels';
-import ProjectSelectedCheck from '../components/ProjectSelectedCheck'
+import Category from '../components/Category';
 
 class Projects extends Component {
   render() {
     return (
         <div>
-          <ProjectSelectedCheck>
-            <Levels
-              category="Project"
-            />
-          </ProjectSelectedCheck>
+          <Category
+            category="Project"
+          />
         </div>
     );
   }
