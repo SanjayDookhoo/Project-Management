@@ -55,7 +55,7 @@ const initState ={
 
 const rootReducer = (state = initState, action) => {
   if(action.type === 'CHANGE_SELECTED'){
-    if(action.value == -1){
+    if(action.value === -1){
       const temp = state[action.category].find(cat => cat.depth === action.depth)
       temp.selected = action.value
       temp.edit = false
@@ -107,8 +107,6 @@ const rootReducer = (state = initState, action) => {
         ]
       }
     }
-
-    return {}
   }
 
   if(action.type === 'CHANGE_EDIT'){

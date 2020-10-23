@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
-import { Bar, Pie, Chart } from 'react-chartjs-2'
+import { Bar } from 'react-chartjs-2'
 import { getRandomColors } from '../helperFunctions/mainHelper'
 
 class Charts extends Component {
   componentDidMount = () => {
     
-    const { chartData, title  } = this.props
+    const { chartData } = this.props
     const label = chartData.map(function(e) {
       return e.label;
     });

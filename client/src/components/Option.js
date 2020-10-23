@@ -27,47 +27,47 @@ class Option extends Component {
   }
 
   render() {
-    const { color, category, depth } = this.props
+    const { category, depth } = this.props
 
     const { selected, option } = this.props
 
     const createNew = (
       <div className="row">
         <div className="col s12 fwbtn">
-          <a className="waves-effect waves-light btn" onClick={this.handleEditorCreate}><i className="material-icons left">add</i>Create New {depth !== 1 ? 'Nested Action' : category}</a>
+          <button className="waves-effect waves-light btn" onClick={this.handleEditorCreate}><i className="material-icons left">add</i>Create New {depth !== 1 ? 'Nested Action' : category}</button>
         </div>
       </div>
     )
 
-    if (option && category != 'Project'){
+    if (option && category !== 'Project'){
       if(selected === -1){
         return createNew
       }else{
         return ( 
           <div className="row">
             <div className="col s6 fwbtn">
-              <a className="waves-effect waves-light btn" onClick={this.handleEditorCreate}><i className="material-icons left">edit</i>Edit {depth !== 1 ? 'Nested Action' : category}</a>
+              <button className="waves-effect waves-light btn" onClick={this.handleEditorCreate}><i className="material-icons left">edit</i>Edit {depth !== 1 ? 'Nested Action' : category}</button>
             </div>
             <div className="col s6 fwbtn">
-              <a className="waves-effect waves-light btn" onClick={this.handleDelete}><i className="material-icons left">delete</i>Delete {depth !== 1 ? 'Nested Action' : category}</a>
+              <button className="waves-effect waves-light btn" onClick={this.handleDelete}><i className="material-icons left">delete</i>Delete {depth !== 1 ? 'Nested Action' : category}</button>
             </div>
           </div>
         )
       }
-    }else if(option && category == 'Project'){
+    }else if(option && category === 'Project'){
       if(selected === -1){
         return createNew
       }else{
         return ( 
           <div className="row">
             <div className="col s4 fwbtn">
-              <a className="waves-effect waves-light btn" onClick={this.handleEditorCreate}><i className="material-icons left">edit</i>Edit {depth !== 1 ? 'Nested Action' : category}</a>
+              <button className="waves-effect waves-light btn" onClick={this.handleEditorCreate}><i className="material-icons left">edit</i>Edit {depth !== 1 ? 'Nested Action' : category}</button>
             </div>
             <div className="col s4 fwbtn">
-              <a className="waves-effect waves-light btn" onClick={this.handleDelete}><i className="material-icons left">delete</i>Delete {depth !== 1 ? 'Nested Action' : category}</a>
+              <button className="waves-effect waves-light btn" onClick={this.handleDelete}><i className="material-icons left">delete</i>Delete {depth !== 1 ? 'Nested Action' : category}</button>
             </div>
             <div className="col s4 fwbtn">
-              <a className="waves-effect waves-light btn" onClick={this.handleStartManagementClick}><i className="material-icons left">insert_chart</i>Start Management</a>
+              <button className="waves-effect waves-light btn" onClick={this.handleStartManagementClick}><i className="material-icons left">insert_chart</i>Start Management</button>
             </div>
           </div>
         )

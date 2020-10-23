@@ -30,17 +30,28 @@ class Category extends Component {
 
   render() {
     const { category } = this.props
-    const { categoryArray, projectSelected } = this.props
+    const { categoryArray } = this.props
 
     if(category !== 'Project'){
-      const categoryList = categoryArray.sort((a, b) => a.depth - b.depth).map(categoryEl => {
+      const categoryArrayLen = categoryArray.length
+      const categoryList = categoryArray.sort((a, b) => a.depth - b.depth).map((categoryEl, index) => {
         return (
           <div key={category+categoryEl.depth}>
             <Depth
               depth={categoryEl.depth}
               category={category}
             />
+            
+            {index < categoryArrayLen -1 ? (
+              <div className="row center">
+              <i class="material-icons">arrow_drop_down</i>
+            </div>
+            ) : (
+              null
+            )}
+            
           </div>
+          
         )
       })
   

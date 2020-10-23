@@ -643,7 +643,7 @@ def report_overview_budget():
   result = chart_schema.dump(query)
 
   res = {
-    'title': 'Budget Across Projects',
+    'title': 'Budget (Dollars) Across Projects',
     'data': result
   }
 
@@ -659,7 +659,7 @@ def report_overview_project_budget():
   action = db.session.query(db.func.sum(Action.budget).label('sum')).filter(Action.project_id == project_id).scalar()
 
   res = {
-    'title': 'Budget Across All Sub Categories for This Project',
+    'title': 'Budget (Dollars) Across All Sub Categories for This Project',
     'data':[
       {
         'label': 'Risk',

@@ -22,7 +22,7 @@ class Delete extends Component {
 
 
   render() {
-    const { color, category } = this.props
+    const { color } = this.props
 
     if(this.props.delete){
       return(
@@ -34,10 +34,10 @@ class Delete extends Component {
               
               <div className="row">
               <div className="col s6 fwbtn">
-                  <a className="waves-effect waves-light btn" onClick={this.handleDelete}><i className="material-icons left">delete</i>Delete</a>
+                  <button className="waves-effect waves-light btn" onClick={this.handleDelete}><i className="material-icons left">delete</i>Delete</button>
                 </div>
                 <div className="col s6 fwbtn">
-                  <a className="waves-effect waves-light btn" onClick={this.handleCancel}><i className="material-icons left">cancel</i>Cancel</a>
+                  <button className="waves-effect waves-light btn" onClick={this.handleCancel}><i className="material-icons left">cancel</i>Cancel</button>
                 </div>
               </div>
             </div>

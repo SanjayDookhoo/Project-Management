@@ -10,7 +10,6 @@ class Edit extends Component {
     const { modifyOrCreate, recordToEdit } = this.props
 
     if(this.state === prevState && modifyOrCreate === 'modify' ){
-      console.log("yes")
       const { id, name, description, budget, status, dueTimestamp } = recordToEdit
       const dueTimestampSplit = dueTimestamp.split(':')
       
@@ -124,7 +123,7 @@ class Edit extends Component {
                   }
                 </div>
                 <div className="col s6 fwbtn">
-                  <a className="waves-effect waves-light btn" onClick={this.handleCancel}><i className="material-icons left">cancel</i>Cancel</a>
+                  <button className="waves-effect waves-light btn" onClick={this.handleCancel}><i className="material-icons left">cancel</i>Cancel</button>
                 </div>
               </div>
             </div>

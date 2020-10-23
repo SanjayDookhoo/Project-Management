@@ -26,7 +26,7 @@ class Reports extends Component {
           self.setState({
             charts: [
               ...self.state.charts,
-              {...response.data, id:count++ }
+              {...response.data, id: 'oc' + count++ }
             ]
           })
         }
@@ -42,7 +42,7 @@ class Reports extends Component {
           self.setState({
             charts: [
               ...self.state.charts,
-              {...response.data, id:count++ }
+              {...response.data, id: 'oc' + count++ }
             ]
           })
         }
@@ -56,7 +56,7 @@ class Reports extends Component {
           self.setState({
             charts: [
               ...self.state.charts,
-              {...response.data, id:count++ }
+              {...response.data, id: 'c' + count++ }
             ]
           })
         }
@@ -68,7 +68,7 @@ class Reports extends Component {
           self.setState({
             charts: [
               ...self.state.charts,
-              {...response.data, id:count++ }
+              {...response.data, id: 'c' + count++ }
             ]
           })
         }
@@ -80,7 +80,7 @@ class Reports extends Component {
           self.setState({
             charts: [
               ...self.state.charts,
-              {...response.data, id:count++ }
+              {...response.data, id: 'c' + count++ }
             ]
           })
         }
@@ -92,20 +92,18 @@ class Reports extends Component {
           self.setState({
             charts: [
               ...self.state.charts,
-              {...response.data, id:count++ }
+              {...response.data, id: 'c' + count++ }
             ]
           })
         }
       })
     }
-
-    // console.log(this.state)
   }
 
   componentDidUpdate = (prevProps, prevState) => {
     console.log(new Date().toLocaleTimeString(),"Reports.js update")
 
-    if(prevProps.projectSelected!=this.props.projectSelected)
+    if(prevProps.projectSelected!==this.props.projectSelected)
       this.updateState()
     
   }
@@ -132,8 +130,8 @@ class Reports extends Component {
   render() {
     const charts = this.state.charts.map( chart =>{
       return (
-        <div>
-          <Chart key={chart.id} chartData={chart.data} title={chart.title}/>
+        <div key={chart.id} >
+          <Chart chartData={chart.data} title={chart.title}/>
         </div>
       )
     })
