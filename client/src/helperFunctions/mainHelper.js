@@ -22,3 +22,8 @@ export const getRandomColors = (amount) => {
 
   return colors;
 }
+
+export const errorHandler = (response) => {
+  const M = window.M 
+  M.toast({html: 'Error: ' + response.status + ', Please Try Again.'})
+}

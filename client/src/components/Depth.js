@@ -5,6 +5,7 @@ import Option from './Option';
 import View from './View';
 import Delete from './Delete';
 import { connect } from 'react-redux'
+import { errorHandler } from '../helperFunctions/mainHelper'
 
 
 class Depth extends Component {
@@ -51,6 +52,8 @@ class Depth extends Component {
             records: response.data,
             dataRetrieved: true,
           })
+        }else{
+          errorHandler(response)
         }
       })
     }else if(this.props.category !== 'Project'){
@@ -65,6 +68,8 @@ class Depth extends Component {
             records: response.data,
             dataRetrieved: true,
           })
+        }else{
+          errorHandler(response)
         }
       })
     } else{
@@ -75,6 +80,8 @@ class Depth extends Component {
             records: response.data,
             dataRetrieved: true,
           })
+        }else{
+          errorHandler(response)
         }
       })
     }
@@ -97,6 +104,8 @@ class Depth extends Component {
           self.setState({
             records: [...self.state.records,response.data]
           })
+        }else{
+          errorHandler(response)
         }
       })
     }else if(this.props.depth >= 2){
@@ -114,6 +123,8 @@ class Depth extends Component {
           self.setState({
             records: [...self.state.records,response.data]
           })
+        }else{
+          errorHandler(response)
         }
       })
     }
@@ -140,6 +151,8 @@ class Depth extends Component {
             response.data
           ]
         })
+      }else{
+        errorHandler(response)
       }
     })
   }
@@ -160,6 +173,8 @@ class Depth extends Component {
           records: self.state.records.filter(record => record.id !== id),
           selected: -1
         })
+      }else{
+        errorHandler(response)
       }
     })
   }

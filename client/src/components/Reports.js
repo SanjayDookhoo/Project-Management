@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux'
 import axios from 'axios'
 import Chart from './Chart'
-
+import { errorHandler } from '../helperFunctions/mainHelper'
 
 class Reports extends Component {
   updateState = () => {
@@ -29,6 +29,8 @@ class Reports extends Component {
               {...response.data, id: 'oc' + count++ }
             ]
           })
+        }else{
+          errorHandler(response)
         }
       })
       //chart2
@@ -45,6 +47,8 @@ class Reports extends Component {
               {...response.data, id: 'oc' + count++ }
             ]
           })
+        }else{
+          errorHandler(response)
         }
       })
     }else{
@@ -59,6 +63,8 @@ class Reports extends Component {
               {...response.data, id: 'c' + count++ }
             ]
           })
+        }else{
+          errorHandler(response)
         }
       })
       //chart2
@@ -71,6 +77,8 @@ class Reports extends Component {
               {...response.data, id: 'c' + count++ }
             ]
           })
+        }else{
+          errorHandler(response)
         }
       })
       //chart3
@@ -83,6 +91,8 @@ class Reports extends Component {
               {...response.data, id: 'c' + count++ }
             ]
           })
+        }else{
+          errorHandler(response)
         }
       })
       //chart4
@@ -95,6 +105,8 @@ class Reports extends Component {
               {...response.data, id: 'c' + count++ }
             ]
           })
+        }else{
+          errorHandler(response)
         }
       })
     }
