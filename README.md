@@ -41,9 +41,9 @@ With this is mind, my interpretation of the possible design was to have one sing
 
 To start, I needed to differentiate what the difference between the categories were
 
-Risk - A Risk is any event or situation that can POSSIBLY lead to the downfall of the project, it must be monitored and preventative measures must be put in place
-Issue - A Issue is any event or situation that did in fact happen and is currently leading to the downfall of the project, it must be resolved quickly
-Action - An Action is a task that is done with the full intention of pushing the project closer to completion.
+- Risk - A Risk is any event or situation that can POSSIBLY lead to the downfall of the project, it must be monitored and preventative measures must be put in place
+- Issue - A Issue is any event or situation that did in fact happen and is currently leading to the downfall of the project, it must be resolved quickly
+- Action - An Action is a task that is done with the full intention of pushing the project closer to completion.
 
 From this new understanding, I attempted to create a project where; Projects, Risks, Issues and Actions would all have common fields that can interpreted differently, but essentially they are all one and the same
 
@@ -63,6 +63,7 @@ Fields
 - description
 - status (status was interpreted to be a percentage)
 - budget (budget was interpreted as running costs, costs to get things done)
+- assigned_to
 - dueTimestamp
 - createdTimestamp
 
@@ -105,9 +106,9 @@ Download or Clone this github repo to your desired location on your PC
 
 steps follows directly after the above steps are completed
 
-cd ../client
-npm install
-npm start
+- cd ../client
+- npm install
+- npm start
 
 #### Notes
 
