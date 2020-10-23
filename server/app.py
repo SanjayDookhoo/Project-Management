@@ -2,7 +2,7 @@ from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy 
 from flask_marshmallow import Marshmallow 
 import os
-import datetime
+from datetime import datetime
 from flask_cors import CORS, cross_origin
 
 # Init app
@@ -27,17 +27,21 @@ class Project(db.Model):
   name = db.Column(db.String(100))
   description = db.Column(db.String(200))
   status = db.Column(db.Integer)
+  budget = db.Column(db.Integer)
+  dueTimestamp = db.Column(db.DateTime)
   createdTimestamp = db.Column(db.DateTime)
 
   risks = db.relationship("Risk", back_populates = "project", cascade = "all, delete, delete-orphan")
   issues = db.relationship("Issue", back_populates = "project", cascade = "all, delete, delete-orphan")
   actions = db.relationship("Action", back_populates = "project", cascade = "all, delete, delete-orphan")
 
-  def __init__(self, name, description):
+  def __init__(self, name, description, status, budget, dueTimestamp):
     self.name = name
     self.description = description
-    self.status = 0
-    self.createdTimestamp = datetime.datetime.now()
+    self.status = status
+    self.budget = budget
+    self.dueTimestamp = dueTimestamp
+    self.createdTimestamp = datetime.now().replace(microsecond=0,second=0)
 
 class Risk(db.Model):
   __tablename__ = 'risk'
@@ -46,6 +50,8 @@ class Risk(db.Model):
   name = db.Column(db.String(100))
   description = db.Column(db.String(200))
   status = db.Column(db.Integer)
+  budget = db.Column(db.Integer)
+  dueTimestamp = db.Column(db.DateTime)
   createdTimestamp = db.Column(db.DateTime)
 
   project_id = db.Column(db.Integer, db.ForeignKey('project.id'), nullable=False)
@@ -55,13 +61,15 @@ class Risk(db.Model):
   nestedAction_id = db.Column(db.Integer, db.ForeignKey('nestedAction.id'))
   nestedAction = db.relationship("NestedAction", back_populates = "risk", cascade = "all, delete, delete-orphan", single_parent = True)
 
-  def __init__(self, name, description, project_id, nestedAction_id):
+  def __init__(self, name, description, status, budget, dueTimestamp, project_id, nestedAction_id):
     self.name = name
     self.description = description
-    self.status = 0
+    self.status = status
+    self.budget = budget
+    self.dueTimestamp = dueTimestamp
     self.project_id = project_id
     self.nestedAction_id = nestedAction_id
-    self.createdTimestamp = datetime.datetime.now()
+    self.createdTimestamp = datetime.now().replace(microsecond=0,second=0)
 
 class Issue(db.Model):
   __tablename__ = 'issue'
@@ -70,6 +78,8 @@ class Issue(db.Model):
   name = db.Column(db.String(100))
   description = db.Column(db.String(200))
   status = db.Column(db.Integer)
+  budget = db.Column(db.Integer)
+  dueTimestamp = db.Column(db.DateTime)
   createdTimestamp = db.Column(db.DateTime)
 
   project_id = db.Column(db.Integer, db.ForeignKey('project.id'), nullable=False)
@@ -79,13 +89,15 @@ class Issue(db.Model):
   nestedAction_id = db.Column(db.Integer, db.ForeignKey('nestedAction.id'), nullable=False)
   nestedAction = db.relationship("NestedAction", back_populates = "issue", cascade = "all, delete, delete-orphan", single_parent = True)
 
-  def __init__(self, name, description, project_id, nestedAction_id):
+  def __init__(self, name, description, status, budget, dueTimestamp, project_id, nestedAction_id):
     self.name = name
     self.description = description
-    self.status = 0
+    self.status = status
+    self.budget = budget
+    self.dueTimestamp = dueTimestamp
     self.project_id = project_id
     self.nestedAction_id = nestedAction_id
-    self.createdTimestamp = datetime.datetime.now()
+    self.createdTimestamp = datetime.now().replace(microsecond=0,second=0)
 
 class Action(db.Model):
   __tablename__ = 'action'
@@ -94,6 +106,8 @@ class Action(db.Model):
   name = db.Column(db.String(100))
   description = db.Column(db.String(200))
   status = db.Column(db.Integer)
+  budget = db.Column(db.Integer)
+  dueTimestamp = db.Column(db.DateTime)
   createdTimestamp = db.Column(db.DateTime)
 
   project_id = db.Column(db.Integer, db.ForeignKey('project.id'), nullable=False)
@@ -103,13 +117,15 @@ class Action(db.Model):
   nestedAction_id = db.Column(db.Integer, db.ForeignKey('nestedAction.id'), nullable=False)
   nestedAction = db.relationship("NestedAction", back_populates = "action", cascade = "all, delete, delete-orphan", single_parent = True)
 
-  def __init__(self, name, description, project_id, nestedAction_id):
+  def __init__(self, name, description, status, budget, dueTimestamp, project_id, nestedAction_id):
     self.name = name
     self.description = description
-    self.status = 0
+    self.status = status
+    self.budget = budget
+    self.dueTimestamp = dueTimestamp
     self.project_id = project_id
     self.nestedAction_id = nestedAction_id
-    self.createdTimestamp = datetime.datetime.now()
+    self.createdTimestamp = datetime.now().replace(microsecond=0,second=0)
 
 class NestedAction(db.Model):
   __tablename__ = 'nestedAction'
@@ -118,6 +134,8 @@ class NestedAction(db.Model):
   name = db.Column(db.String(100))
   description = db.Column(db.String(200))
   status = db.Column(db.Integer)
+  budget = db.Column(db.Integer)
+  dueTimestamp = db.Column(db.DateTime)
   createdTimestamp = db.Column(db.DateTime)
 
   parent_id = db.Column(db.Integer, db.ForeignKey('nestedAction.id'))
@@ -127,12 +145,14 @@ class NestedAction(db.Model):
   issue = db.relationship("Issue", back_populates = "nestedAction")
   action = db.relationship("Action", back_populates = "nestedAction")
 
-  def __init__(self, name = "<used as link>", description = "<used as link>", parent_id = db.null()):
+  def __init__(self, name = "<used as link>", description = "<used as link>", status = 0, budget = 0, dueTimestamp = datetime.now().replace(microsecond=0,second=0), parent_id = db.null()):
     self.name = name
     self.description = description
-    self.status = 0
+    self.status = status
+    self.budget = budget
+    self.dueTimestamp = dueTimestamp
     self.parent_id = parent_id
-    self.createdTimestamp = datetime.datetime.now()
+    self.createdTimestamp = datetime.now().replace(microsecond=0,second=0)
 
 
 # my Schemas
@@ -172,12 +192,15 @@ nestedActions_schema = NestedActionSchema(many=True)
 # Begin CRUD Operations
 
 # Create a Project
-@app.route('/project', methods=['POST'])
+@app.route('/Project', methods=['POST'])
 def add_project():
   name = request.json['name']
   description = request.json['description']
+  status = request.json['status']
+  budget = request.json['budget']
+  dueTimestamp = datetime.strptime(request.json['dueTimestamp'], '%Y-%m-%dT%H:%M') if request.json['dueTimestamp'] != '' else datetime(1,1,1,1,1)
 
-  new_project = Project(name, description)
+  new_project = Project(name, description, status, budget, dueTimestamp)
 
   db.session.add(new_project)
   db.session.commit()
@@ -185,14 +208,14 @@ def add_project():
   return project_schema.jsonify(new_project)
 
 # Get All Projects
-@app.route('/projects', methods=['GET'])
+@app.route('/Projects', methods=['GET'])
 def get_projects():
   all_projects = Project.query.all()
   result = projects_schema.dump(all_projects)
   return jsonify(result)
 
 # Get Single Project
-@app.route('/project', methods=['GET'])
+@app.route('/Project', methods=['GET'])
 def get_project():
   id = request.args.get('id')
 
@@ -200,25 +223,29 @@ def get_project():
   return project_schema.jsonify(project)
 
 # Update a Project
-@app.route('/project', methods=['PUT'])
+@app.route('/Project', methods=['PUT'])
 def update_project():
   id = request.json['id']
   name = request.json['name']
   description = request.json['description']
   status = request.json['status']
+  budget = request.json['budget']
+  dueTimestamp = datetime.strptime(request.json['dueTimestamp'], '%Y-%m-%dT%H:%M') if request.json['dueTimestamp'] != '' else datetime(1,1,1,1,1)
   
   project = Project.query.get(id)
 
   project.name = name
   project.description = description
   project.status = status
+  project.budget = budget
+  project.dueTimestamp = dueTimestamp
 
   db.session.commit()
 
   return project_schema.jsonify(project)
 
 # Delete Project
-@app.route('/project', methods=['DELETE'])
+@app.route('/Project', methods=['DELETE'])
 def delete_project():
   id = request.args.get('id')
 
@@ -229,10 +256,13 @@ def delete_project():
   return project_schema.jsonify(project)
 
 # Create a Risk
-@app.route('/risk', methods=['POST'])
+@app.route('/Risk', methods=['POST'])
 def add_risk():
   name = request.json['name']
   description = request.json['description']
+  status = request.json['status']
+  budget = request.json['budget']
+  dueTimestamp = datetime.strptime(request.json['dueTimestamp'], '%Y-%m-%dT%H:%M') if request.json['dueTimestamp'] != '' else datetime(1,1,1,1,1)
   project_id = request.json['project_id']
 
   # create nestedAction to allow starting of nestedActions
@@ -242,7 +272,7 @@ def add_risk():
 
   nestedAction_id = new_nestedAction.id
 
-  new_risk = Risk(name, description, project_id, nestedAction_id)
+  new_risk = Risk(name, description, status, budget, dueTimestamp, project_id, nestedAction_id)
 
   db.session.add(new_risk)
   db.session.commit()
@@ -250,14 +280,14 @@ def add_risk():
   return risk_schema.jsonify(new_risk)
 
 # Get All Risks
-@app.route('/risks', methods=['GET'])
+@app.route('/Risks', methods=['GET'])
 def get_risks():
   all_risks = Risk.query.all()
   result = risks_schema.dump(all_risks)
   return jsonify(result)
 
 # Get Single Risk
-@app.route('/risk', methods=['GET'])
+@app.route('/Risk', methods=['GET'])
 def get_risk():
   id = request.args.get('id')
 
@@ -265,25 +295,29 @@ def get_risk():
   return risk_schema.jsonify(risk)
 
 # Update a Risk
-@app.route('/risk', methods=['PUT'])
+@app.route('/Risk', methods=['PUT'])
 def update_risk():
   id = request.json['id']
   name = request.json['name']
   description = request.json['description']
   status = request.json['status']
+  budget = request.json['budget']
+  dueTimestamp = datetime.strptime(request.json['dueTimestamp'], '%Y-%m-%dT%H:%M') if request.json['dueTimestamp'] != '' else datetime(1,1,1,1,1)
   
   risk = Risk.query.get(id)
 
   risk.name = name
   risk.description = description
   risk.status = status
+  risk.budget = budget
+  risk.dueTimestamp = dueTimestamp
 
   db.session.commit()
 
   return risk_schema.jsonify(risk)
 
 # Delete Risk
-@app.route('/risk', methods=['DELETE'])
+@app.route('/Risk', methods=['DELETE'])
 def delete_risk():
   id = request.args.get('id')
 
@@ -294,10 +328,13 @@ def delete_risk():
   return risk_schema.jsonify(risk)
 
 # Create a Issue
-@app.route('/issue', methods=['POST'])
+@app.route('/Issue', methods=['POST'])
 def add_issue():
   name = request.json['name']
   description = request.json['description']
+  status = request.json['status']
+  budget = request.json['budget']
+  dueTimestamp = datetime.strptime(request.json['dueTimestamp'], '%Y-%m-%dT%H:%M') if request.json['dueTimestamp'] != '' else datetime(1,1,1,1,1)
   project_id = request.json['project_id']
 
   # create nestedAction to allow starting of nestedActions
@@ -307,7 +344,7 @@ def add_issue():
 
   nestedAction_id = new_nestedAction.id
 
-  new_issue = Issue(name, description, project_id, nestedAction_id)
+  new_issue = Issue(name, description, status, budget, dueTimestamp, project_id, nestedAction_id)
 
   db.session.add(new_issue)
   db.session.commit()
@@ -315,14 +352,14 @@ def add_issue():
   return issue_schema.jsonify(new_issue)
 
 # Get All Issues
-@app.route('/issues', methods=['GET'])
+@app.route('/Issues', methods=['GET'])
 def get_issues():
   all_issues = Issue.query.all()
   result = issues_schema.dump(all_issues)
   return jsonify(result)
 
 # Get Single Issue
-@app.route('/issue', methods=['GET'])
+@app.route('/Issue', methods=['GET'])
 def get_issue():
   id = request.args.get('id')
 
@@ -330,25 +367,29 @@ def get_issue():
   return issue_schema.jsonify(issue)
 
 # Update a Issue
-@app.route('/issue', methods=['PUT'])
+@app.route('/Issue', methods=['PUT'])
 def update_issue():
   id = request.json['id']
   name = request.json['name']
   description = request.json['description']
   status = request.json['status']
+  budget = request.json['budget']
+  dueTimestamp = datetime.strptime(request.json['dueTimestamp'], '%Y-%m-%dT%H:%M') if request.json['dueTimestamp'] != '' else datetime(1,1,1,1,1)
   
   issue = Issue.query.get(id)
 
   issue.name = name
   issue.description = description
   issue.status = status
+  issue.budget = budget
+  issue.dueTimestamp = dueTimestamp
 
   db.session.commit()
 
   return issue_schema.jsonify(issue)
 
 # Delete Issue
-@app.route('/issue', methods=['DELETE'])
+@app.route('/Issue', methods=['DELETE'])
 def delete_issue():
   id = request.args.get('id')
 
@@ -359,10 +400,13 @@ def delete_issue():
   return issue_schema.jsonify(issue)
 
 # Create a Action
-@app.route('/action', methods=['POST'])
+@app.route('/Action', methods=['POST'])
 def add_action():
   name = request.json['name']
   description = request.json['description']
+  status = request.json['status']
+  budget = request.json['budget']
+  dueTimestamp = datetime.strptime(request.json['dueTimestamp'], '%Y-%m-%dT%H:%M') if request.json['dueTimestamp'] != '' else datetime(1,1,1,1,1)
   project_id = request.json['project_id']
 
   # create nestedAction to allow starting of nestedActions
@@ -372,7 +416,7 @@ def add_action():
 
   nestedAction_id = new_nestedAction.id
 
-  new_action = Action(name, description, project_id, nestedAction_id)
+  new_action = Action(name, description, status, budget, dueTimestamp, project_id, nestedAction_id)
 
   db.session.add(new_action)
   db.session.commit()
@@ -380,14 +424,14 @@ def add_action():
   return action_schema.jsonify(new_action)
 
 # Get All Actions
-@app.route('/actions', methods=['GET'])
+@app.route('/Actions', methods=['GET'])
 def get_actions():
   all_actions = Action.query.all()
   result = actions_schema.dump(all_actions)
   return jsonify(result)
 
 # Get Single Action
-@app.route('/action', methods=['GET'])
+@app.route('/Action', methods=['GET'])
 def get_action():
   id = request.args.get('id')
 
@@ -395,25 +439,29 @@ def get_action():
   return action_schema.jsonify(action)
 
 # Update a Action
-@app.route('/action', methods=['PUT'])
+@app.route('/Action', methods=['PUT'])
 def update_action():
   id = request.json['id']
   name = request.json['name']
   description = request.json['description']
   status = request.json['status']
+  budget = request.json['budget']
+  dueTimestamp = datetime.strptime(request.json['dueTimestamp'], '%Y-%m-%dT%H:%M') if request.json['dueTimestamp'] != '' else datetime(1,1,1,1,1)
   
   action = Action.query.get(id)
 
   action.name = name
   action.description = description
   action.status = status
+  action.budget = budget
+  action.dueTimestamp = dueTimestamp
 
   db.session.commit()
 
   return action_schema.jsonify(action)
 
 # Delete Action
-@app.route('/action', methods=['DELETE'])
+@app.route('/Action', methods=['DELETE'])
 def delete_action():
   id = request.args.get('id')
 
@@ -424,16 +472,19 @@ def delete_action():
   return action_schema.jsonify(action)
 
 # Create a NestedAction
-@app.route('/nestedAction', methods=['POST'])
+@app.route('/NestedAction', methods=['POST'])
 def add_nestedAction():
   name = request.json['name']
   description = request.json['description']
+  status = request.json['status']
+  budget = request.json['budget']
+  dueTimestamp = datetime.strptime(request.json['dueTimestamp'], '%Y-%m-%dT%H:%M') if request.json['dueTimestamp'] != '' else datetime(1,1,1,1,1)
 
   if ('parent_id' in request.json):
     parent_id = request.json['parent_id']
-    new_nestedAction = NestedAction(name, description, parent_id)
+    new_nestedAction = NestedAction(name, description, status, budget, dueTimestamp, parent_id)
   else:
-    new_nestedAction = NestedAction(name, description)
+    new_nestedAction = NestedAction(name, description, status, budget, dueTimestamp)
 
   db.session.add(new_nestedAction)
   db.session.commit()
@@ -441,14 +492,14 @@ def add_nestedAction():
   return nestedAction_schema.jsonify(new_nestedAction)
 
 # Get All NestedActions
-@app.route('/nestedActions', methods=['GET'])
+@app.route('/NestedActions', methods=['GET'])
 def get_nestedActions():
   all_nestedActions = NestedAction.query.all()
   result = nestedActions_schema.dump(all_nestedActions)
   return jsonify(result)
 
 # Get Single NestedAction
-@app.route('/nestedAction', methods=['GET'])
+@app.route('/NestedAction', methods=['GET'])
 def get_nestedAction():
   id = request.args.get('id')
 
@@ -456,25 +507,29 @@ def get_nestedAction():
   return nestedAction_schema.jsonify(nestedAction)
 
 # Update a NestedAction
-@app.route('/nestedAction', methods=['PUT'])
+@app.route('/NestedAction', methods=['PUT'])
 def update_nestedAction():
   id = request.json['id']
   name = request.json['name']
   description = request.json['description']
   status = request.json['status']
+  budget = request.json['budget']
+  dueTimestamp = datetime.strptime(request.json['dueTimestamp'], '%Y-%m-%dT%H:%M') if request.json['dueTimestamp'] != '' else datetime(1,1,1,1,1)
   
   nestedAction = NestedAction.query.get(id)
 
   nestedAction.name = name
   nestedAction.description = description
   nestedAction.status = status
+  nestedAction.budget = budget
+  nestedAction.dueTimestamp = dueTimestamp
 
   db.session.commit()
 
   return nestedAction_schema.jsonify(nestedAction)
 
 # Delete NestedAction
-@app.route('/nestedAction', methods=['DELETE'])
+@app.route('/NestedAction', methods=['DELETE'])
 def delete_nestedAction():
   id = request.args.get('id')
 
@@ -489,7 +544,7 @@ def delete_nestedAction():
 # Begin Advanced CRUD Operations (Specifically including filtering)
 
 # Get All Risks, associated with a particular project
-@app.route('/risks_from_project', methods=['GET'])
+@app.route('/Risks_from_project', methods=['GET'])
 def get_risks_from_project():
   project_id = request.args.get('project_id')
 
@@ -498,7 +553,7 @@ def get_risks_from_project():
   return jsonify(result)
 
 # Get All Issues, associated with a particular project
-@app.route('/issues_from_project', methods=['GET'])
+@app.route('/Issues_from_project', methods=['GET'])
 def get_issues_from_project():
   project_id = request.args.get('project_id')
 
@@ -507,7 +562,7 @@ def get_issues_from_project():
   return jsonify(result)
 
 # Get All Actions, associated with a particular project
-@app.route('/actions_from_project', methods=['GET'])
+@app.route('/Actions_from_project', methods=['GET'])
 def get_actions_from_project():
   project_id = request.args.get('project_id')
 
@@ -516,13 +571,23 @@ def get_actions_from_project():
   return jsonify(result)
 
 # Get All NestedActions, that have the specified nestedAction as a parent
-@app.route('/nestedActions_from_parent', methods=['GET'])
+@app.route('/NestedActions_from_parent', methods=['GET'])
 def get_nestedActions_from_parent():
   parent_id = request.args.get('parent_id')
+  first = request.args.get('first')
 
+  # if(first):
+  #   new_parent_id = NestedAction.query.filter(NestedAction.parent_id == parent_id).first().id
+
+  #   all_nestedActions = NestedAction.query.filter(NestedAction.parent_id == new_parent_id).all()
+  #   result = nestedActions_schema.dump(all_nestedActions)
+  #   return jsonify(result)
+  # else:
   all_nestedActions = NestedAction.query.filter(NestedAction.parent_id == parent_id).all()
   result = nestedActions_schema.dump(all_nestedActions)
   return jsonify(result)
+  
+  
 
 # End Advanced CRUD Operations (Specifically including filtering)
 
