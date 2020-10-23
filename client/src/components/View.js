@@ -1,6 +1,7 @@
 import React, { Component} from 'react';
 import { connect } from 'react-redux'
 import { changeSelected } from '../actions/rootActions'
+import { statusField } from '../helperFunctions/mainHelper'
 
 class View extends Component {
   shouldComponentUpdate = (nextProps, nextState) => {
@@ -8,7 +9,7 @@ class View extends Component {
   }
 
   componentDidUpdate = () => {
-    console.log(new Date().toLocaleTimeString(),"ViewProject.js update")
+    console.log("View.js update")
   }
 
   handleFocus = (id) => {
@@ -59,7 +60,7 @@ class View extends Component {
   render() {
     let view = null
 
-    const { color, category, selected, records } = this.props
+    const { color, category, depth , selected, records } = this.props
     
     if(selected !== -1){
       const projectName = records.find(project => project.id === selected).name
@@ -88,7 +89,7 @@ class View extends Component {
                       <th>Name</th>
                       <th>Description</th>
                       <th>Budget</th>
-                      <th>Status</th>
+                      <th> {statusField(category, depth)}% </th> 
                       <th>Due Date</th>
                       <th>Created Date</th>
                     </tr>
@@ -104,7 +105,7 @@ class View extends Component {
         <div>
           <div className={`post card white-text ${color}`}> 
             <div className="card-content"> 
-              No {`${category === 'NestedAction' ? 'Nested Action' : category}s`}
+              No {`${depth >= 2 ? 'Nested Action' : category}s`}
             </div>
           </div>
         </div>

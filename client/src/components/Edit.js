@@ -1,15 +1,15 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux'
 import { changeEdit, changeOption } from '../actions/rootActions'
+import { statusField } from '../helperFunctions/mainHelper'
 
 class Edit extends Component {
   componentDidUpdate = (prevProps, prevState) => {
-    console.log(new Date().toLocaleTimeString(),"Edit.js update")
+    console.log("Edit.js update")
+    const { modifyOrCreate, recordToEdit, edit } = this.props
 
-    const { modifyOrCreate, recordToEdit } = this.props
-
-    if(this.state === prevState && modifyOrCreate === 'modify' ){
-      console.log("yes")
+    if(edit && this.state === prevState && modifyOrCreate === 'modify' ){
+      console.log("Edit.js update, expect another update, setting state in componentDidUpdate for Modify")
       const { id, name, description, budget, status, dueTimestamp } = recordToEdit
       const dueTimestampSplit = dueTimestamp.split(':')
       
@@ -23,7 +23,8 @@ class Edit extends Component {
       })
     }
     
-    if(this.state === prevState && modifyOrCreate === 'create' ){
+    if(edit && this.state === prevState && modifyOrCreate === 'create' ){
+      console.log("Edit.js update, expect another update, setting state in componentDidUpdate for Create")
       this.setState({
         name: '',
         description: '',
@@ -105,7 +106,7 @@ class Edit extends Component {
               </div>
               <div className="input-field">
                 <input id="status" type="number" min="0" max="100" className="validate white-text" value={status} onChange={this.handleChange}/>
-                <label htmlFor="status" className="active">Status</label>
+                <label htmlFor="status" className="active">{statusField(category, depth)} (%)</label>
               </div>
               <div className="input-field">
                 <input id="dueTimestamp" type="datetime-local" className="validate white-text" value={dueTimestamp} onChange={this.handleChange}/>
@@ -123,7 +124,7 @@ class Edit extends Component {
                   }
                 </div>
                 <div className="col s6 fwbtn">
-                  <a className="waves-effect waves-light btn" onClick={this.handleCancel}><i className="material-icons left">cancel</i>Cancel</a>
+                  <button className="waves-effect waves-light btn" onClick={this.handleCancel}><i className="material-icons left">cancel</i>Cancel</button>
                 </div>
               </div>
             </div>

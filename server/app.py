@@ -176,6 +176,9 @@ class NestedActionSchema(ma.SQLAlchemyAutoSchema):
   class Meta:
     model = NestedAction
     include_fk = True
+class Chart_schema(ma.Schema):
+    class Meta:
+      fields = ("label", "data")
 
 # Init schema
 project_schema = ProjectSchema()
@@ -188,6 +191,7 @@ action_schema = ActionSchema()
 actions_schema = ActionSchema(many=True)
 nestedAction_schema = NestedActionSchema()
 nestedActions_schema = NestedActionSchema(many=True)
+chart_schema = Chart_schema(many=True)
 
 # Begin CRUD Operations
 
@@ -586,10 +590,124 @@ def get_nestedActions_from_parent():
   all_nestedActions = NestedAction.query.filter(NestedAction.parent_id == parent_id).all()
   result = nestedActions_schema.dump(all_nestedActions)
   return jsonify(result)
-  
-  
 
 # End Advanced CRUD Operations (Specifically including filtering)
+
+# Beginning of Data requests for report generation
+
+
+
+# average of risks probability across all projects
+@app.route('/report_overview_risk', methods=['GET'])
+def report_overview_risk():
+  join = db.session.query(Project.name.label('label'), db.func.avg(Risk.status).label('data') ).join(Risk).group_by(Project.id)
+  result = chart_schema.dump(join)
+  
+  res = {
+    'title': 'Percentage of Probability of Risk Occuring Across Projects',
+    'data': result
+  }
+
+  return jsonify(res)
+
+# average of issues resolved across all projects
+@app.route('/report_overview_issue', methods=['GET'])
+def report_overview_issue():
+  join = db.session.query(Project.name.label('label'), db.func.avg(Issue.status).label('data') ).join(Issue).group_by(Project.id)
+  result = chart_schema.dump(join)
+  
+  res = {
+    'title': 'Percentage of Issues Resolved Across Projects',
+    'data': result
+  }
+
+  return jsonify(res)
+
+# average of actions fulfilled across all projects
+@app.route('/report_overview_action', methods=['GET'])
+def report_overview_action():
+  join = db.session.query(Project.name.label('label'), db.func.avg(Action.status).label('data') ).join(Action).group_by(Project.id)
+  result = chart_schema.dump(join)
+  
+  res = {
+    'title': 'Percentage of Actions Fulfilled Across Projects',
+    'data': result
+  }
+
+  return jsonify(res)
+
+# budget across all projects
+@app.route('/report_overview_budget', methods=['GET'])
+def report_overview_budget():
+  query = db.session.query(Project.name.label('label'), Project.budget.label('data'))
+  result = chart_schema.dump(query)
+
+  res = {
+    'title': 'Budget (Dollars) Across Projects',
+    'data': result
+  }
+
+  return jsonify(res)
+
+# budget across all sub categories for a single project
+@app.route('/report_overview_project_budget', methods=['GET'])
+def report_overview_project_budget():
+  project_id = request.args.get('project_id')
+
+  risk = db.session.query(db.func.sum(Risk.budget).label('sum')).filter(Risk.project_id == project_id).scalar()
+  issue = db.session.query(db.func.sum(Issue.budget).label('sum')).filter(Issue.project_id == project_id).scalar()
+  action = db.session.query(db.func.sum(Action.budget).label('sum')).filter(Action.project_id == project_id).scalar()
+
+  res = {
+    'title': 'Budget (Dollars) Across All Sub Categories for This Project',
+    'data':[
+      {
+        'label': 'Risk',
+        'data': risk
+      },
+      {
+        'label': 'Issue',
+        'data': issue
+      },
+      {
+        'label': 'Action',
+        'data': action
+      }
+    ]
+  }
+
+  return jsonify(res)
+
+# avg of all categories for a single project
+@app.route('/report_overview_project_categories', methods=['GET'])
+def report_overview_project_categories():
+  project_id = request.args.get('project_id')
+
+  risk = db.session.query(db.func.avg(Risk.status).label('count')).filter(Risk.project_id == project_id).scalar()
+  issue = db.session.query(db.func.avg(Issue.status).label('count')).filter(Issue.project_id == project_id).scalar()
+  action = db.session.query(db.func.avg(Action.status).label('count')).filter(Action.project_id == project_id).scalar()
+  print(risk)
+  res = {
+    'title': 'Percentage of all categories for This Project',
+    'data':[
+      {
+        'label': 'Risk Probability',
+        'data': risk
+      },
+      {
+        'label': 'Issues Resolved',
+        'data': issue
+      },
+      {
+        'label': 'Actions Fulfilled',
+        'data': action
+      }
+    ]
+  }
+
+  return jsonify(res)
+
+# End of Data requests for report generation
 
 # Run Server
 if __name__ == '__main__':

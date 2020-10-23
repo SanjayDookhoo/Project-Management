@@ -2,18 +2,18 @@ import React, { Component } from 'react';
 import ProjectSelectedCheck from '../components/ProjectSelectedCheck'
 import Category from '../components/Category';
 
-class Risks extends Component {
+class NotFound_404 extends Component {
   render() {
     return (
         <div>
-          <ProjectSelectedCheck>
-            <Category
-              category="Risk"
-            />
-          </ProjectSelectedCheck>
+          <div className={"post card"}> 
+            <div className="card-content"> 
+              404- Page Not Found
+            </div>
+          </div>
         </div>
     );
   }
 }
 
-export default Risks;
+export default NotFound_404;
