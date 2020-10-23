@@ -156,7 +156,7 @@ const rootReducer = (state = initState, action) => {
       return {
         ...state,
         [action.category]: [
-          ...state[action.category].filter(cat => cat.depth !== action.depth),
+          ...state[action.category].filter(cat => cat.depth < action.depth),
           temp
         ]
       }

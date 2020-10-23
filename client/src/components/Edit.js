@@ -8,12 +8,15 @@ class Edit extends Component {
 
     if(this.props.record != prevProps.record){
       if(this.props.record){
-        const { name, description, status } = this.props.record
-  
+        const { id, name, description, budget, status, dueTimestamp } = this.props.record
+        const dueTimestampSplit = dueTimestamp.split(':')
         this.setState({
+          id,
           name,
           description,
-          status
+          budget,
+          status,
+          dueTimestamp:  dueTimestamp==='0001-01-01T01:01:00' ? '' : dueTimestampSplit[0] + ':' + dueTimestampSplit[1]
         })
       }
     }
@@ -22,8 +25,9 @@ class Edit extends Component {
   state = {
     name: '',
     description: '',
+    budget: 0,
     status: 0,
-
+    dueTimestamp: '',
   }
 
   handleChange = (e) => {
@@ -46,6 +50,15 @@ class Edit extends Component {
       changeOption_(category, depth, true)
       handleNewRecord(this.state)
     }
+    
+    //if a new category element was created, and the user proceeds to enter another in the same category without doing anything else, the state would not have changed to allow resetting of state to default, therefore this is to counter that issue
+    this.setState({
+      name: '',
+      description: '',
+      budget: 0,
+      status: 0,
+      dueTimestamp: '',
+    })
   }
 
   handleCancel = () => {
@@ -57,8 +70,8 @@ class Edit extends Component {
   }
 
   render() {
-    const { name, description, status } = this.state
-    const { color, category, depth, editOrModify } = this.props
+    const { name, description, budget, status, dueTimestamp } = this.state
+    const { color, category, depth, modifyOrCreate } = this.props
     const { edit } = this.props
 
     if(edit){
@@ -75,8 +88,16 @@ class Edit extends Component {
                 <label htmlFor="description" className="active">Description</label>
               </div>
               <div className="input-field">
+                <input id="budget" type="number" className="validate white-text" value={budget} onChange={this.handleChange}/>
+                <label htmlFor="budget" className="active">Budget</label>
+              </div>
+              <div className="input-field">
                 <input id="status" type="number" min="0" max="100" className="validate white-text" value={status} onChange={this.handleChange}/>
                 <label htmlFor="status" className="active">Status</label>
+              </div>
+              <div className="input-field">
+                <input id="dueTimestamp" type="datetime-local" className="validate white-text" value={dueTimestamp} onChange={this.handleChange}/>
+                <label htmlFor="dueTimestamp" className="active">Due Date</label>
               </div>
               
               <div className="row">
@@ -85,7 +106,7 @@ class Edit extends Component {
                   { this.props.project ? (
                       <button className="waves-effect waves-light btn" type="submit" name="action"><i className="material-icons left">save</i>Save {depth !== 1 ? 'Nested Action' : category}</button>
                     ) : (
-                      <button className="waves-effect waves-light btn" type="submit" name="action"><i className="material-icons left">create</i> {editOrModify === 'modify' ? 'Edit' : 'Create'} {depth !== 1 ? 'Nested Action' : category}</button>
+                      <button className="waves-effect waves-light btn" type="submit" name="action"><i className="material-icons left">create</i> {modifyOrCreate === 'modify' ? 'Edit' : 'Create'} {depth !== 1 ? 'Nested Action' : category}</button>
                     )
                   }
                 </div>
@@ -108,7 +129,7 @@ const mapStateToProps = (state, ownProps) => {
 
   return {
     edit: state[category].find(cat => cat.depth === depth).edit,
-    editOrModify: state[category].find(cat => cat.depth === depth).selected !== -1 ? 'modify' : 'create',
+    modifyOrCreate: state[category].find(cat => cat.depth === depth).selected !== -1 ? 'modify' : 'create',
   }
 }
 

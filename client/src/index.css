@@ -28,3 +28,7 @@ nav a.active{
 .fwbtn > .btn{
   width: 100%;
 }
+
+.datepicker-row{
+  color: black!important;
+}

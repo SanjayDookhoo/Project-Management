@@ -63,13 +63,14 @@ class Depth extends Component {
 
   handleNewRecord = (rec) => {
     let self = this //The callback in the axios function is called not from within your function, so the 'this' is not pointing to what you expect, i.e., your class.
-console.log(rec)
     if(this.props.depth === 0){
-      const { name, description, status} = rec
+      const { name, description, budget, status, dueTimestamp} = rec
       axios.post(`${process.env.REACT_APP_API_URL}/${self.props.category}`, {
         name,
         description,
-        status
+        budget,
+        status,
+        dueTimestamp,
       })
       .then(function (response) {
         if(response.status === 200){
@@ -79,11 +80,13 @@ console.log(rec)
         }
       })
     }else if(this.props.depth === 1){
-      const { name, description, status} = rec
+      const { name, description, budget, status, dueTimestamp} = rec
       axios.post(`${process.env.REACT_APP_API_URL}/${self.props.category}`, {
         name,
         description,
+        budget,
         status,
+        dueTimestamp,
         project_id: self.props.projectFilter
       })
       .then(function (response) {
@@ -94,11 +97,13 @@ console.log(rec)
         }
       })
     }else if(this.props.depth >= 2){
-      const { name, description, status} = rec
+      const { name, description, budget, status, dueTimestamp} = rec
       axios.post(`${process.env.REACT_APP_API_URL}/NestedAction`, {
         name,
         description,
+        budget,
         status,
+        dueTimestamp,
         parent_id: self.props.nestedAction_id
       })
       .then(function (response) {
@@ -113,20 +118,25 @@ console.log(rec)
 
   handleModifyRecord = (rec) => {
     let self = this //The callback in the axios function is called not from within your function, so the 'this' is not pointing to what you expect, i.e., your class.
-    const { id, name, description, status} = rec
-
+    const { id, name, description, budget, status, dueTimestamp} = rec
+console.log(rec)
     const modifyFrom = this.props.depth === 1 ? this.props.category : 'NestedAction'
 
     axios.put(`${process.env.REACT_APP_API_URL}/${modifyFrom}`, {
       id,
       name,
       description,
-      status
+      budget,
+      status,
+      dueTimestamp,
     })
     .then(function (response) {
       if(response.status === 200){
         self.setState({
-          records: [...self.state.records,response.data]
+          records: [
+            ...self.state.records.filter(rec => rec.id !== id),
+            response.data
+          ]
         })
       }
     })
