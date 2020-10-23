@@ -1,6 +1,4 @@
 import React, { Component } from 'react';
-import ProjectSelectedCheck from '../components/ProjectSelectedCheck'
-import Category from '../components/Category';
 
 class NotFound_404 extends Component {
   render() {
