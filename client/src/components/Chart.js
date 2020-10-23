@@ -2,7 +2,11 @@ import React, { Component } from 'react';
 import { Bar } from 'react-chartjs-2'
 import { getRandomColors } from '../helperFunctions/mainHelper'
 
-class Charts extends Component {
+class Chart extends Component {
+  componentDidUpdate = () => {
+    console.log("chart.js update")
+  }
+
   componentDidMount = () => {
     
     const { chartData } = this.props
@@ -65,4 +69,4 @@ class Charts extends Component {
   }
 }
 
-export default Charts
+export default Chart

@@ -101,7 +101,7 @@ class Reports extends Component {
   }
 
   componentDidUpdate = (prevProps, prevState) => {
-    console.log(new Date().toLocaleTimeString(),"Reports.js update")
+    console.log("Reports.js update")
 
     if(prevProps.projectSelected!==this.props.projectSelected)
       this.updateState()

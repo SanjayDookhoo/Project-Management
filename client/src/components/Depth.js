@@ -169,7 +169,7 @@ class Depth extends Component {
   }
 
   componentDidUpdate = () => {
-    console.log("Depth rendered again")
+    console.log("Depth.js update")
   }
 
   colorSelector(category, depth=0) {

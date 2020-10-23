@@ -5,11 +5,11 @@ import { statusField } from '../helperFunctions/mainHelper'
 
 class Edit extends Component {
   componentDidUpdate = (prevProps, prevState) => {
-    console.log(new Date().toLocaleTimeString(),"Edit.js update")
+    console.log("Edit.js update")
+    const { modifyOrCreate, recordToEdit, edit } = this.props
 
-    const { modifyOrCreate, recordToEdit } = this.props
-
-    if(this.state === prevState && modifyOrCreate === 'modify' ){
+    if(edit && this.state === prevState && modifyOrCreate === 'modify' ){
+      console.log("Edit.js update, expect another update, setting state in componentDidUpdate for Modify")
       const { id, name, description, budget, status, dueTimestamp } = recordToEdit
       const dueTimestampSplit = dueTimestamp.split(':')
       
@@ -23,7 +23,8 @@ class Edit extends Component {
       })
     }
     
-    if(this.state === prevState && modifyOrCreate === 'create' ){
+    if(edit && this.state === prevState && modifyOrCreate === 'create' ){
+      console.log("Edit.js update, expect another update, setting state in componentDidUpdate for Create")
       this.setState({
         name: '',
         description: '',

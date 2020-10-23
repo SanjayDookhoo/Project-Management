@@ -9,7 +9,7 @@ class View extends Component {
   }
 
   componentDidUpdate = () => {
-    console.log(new Date().toLocaleTimeString(),"ViewProject.js update")
+    console.log("View.js update")
   }
 
   handleFocus = (id) => {

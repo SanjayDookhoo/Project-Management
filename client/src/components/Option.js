@@ -5,7 +5,7 @@ import { changeEdit, changeDelete, changeOption } from '../actions/rootActions'
 
 class Option extends Component {
   componentDidUpdate = () => {
-    console.log(new Date().toLocaleTimeString(),"Option.js update")
+    console.log("Option.js update")
   }
 
   handleStartManagementClick = () => {

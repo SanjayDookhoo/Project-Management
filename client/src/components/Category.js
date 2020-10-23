@@ -7,7 +7,7 @@ import Reports from './Reports';
 
 class Category extends Component {
   componentDidUpdate = () => {
-    console.log("Category rendered again")
+    console.log("Category update")
   }
 
   shouldComponentUpdate = (nextProps, nextState) => {
@@ -41,10 +41,10 @@ class Category extends Component {
               depth={categoryEl.depth}
               category={category}
             />
-            
+
             {index < categoryArrayLen -1 ? (
               <div className="row center">
-              <i class="material-icons">arrow_drop_down</i>
+              <i className="material-icons">arrow_drop_down</i>
             </div>
             ) : (
               null

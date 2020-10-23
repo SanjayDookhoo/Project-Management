@@ -4,7 +4,7 @@ import { changeDelete } from '../actions/rootActions'
 
 class Delete extends Component {
   componentDidUpdate = () => {
-    console.log(new Date().toLocaleTimeString(),"Edit.js update")
+    console.log("delete.js update")
   }
 
   handleDelete = () => {
