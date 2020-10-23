@@ -3,6 +3,10 @@ import { connect } from 'react-redux'
 import { changeSelected } from '../actions/rootActions'
 
 class View extends Component {
+  shouldComponentUpdate = (nextProps, nextState) => {
+    return true
+  }
+
   componentDidUpdate = () => {
     console.log(new Date().toLocaleTimeString(),"ViewProject.js update")
   }
@@ -11,9 +15,8 @@ class View extends Component {
     const { category, depth, records } = this.props
     const { changeSelected_ } = this.props
     let nestedAction_id = null
-    if(depth == 1){
-      console.log(records.find(rec => rec.id == id))
-      nestedAction_id = records.find(rec => rec.id == id).nestedAction_id
+    if(depth === 1){
+      nestedAction_id = records.find(rec => rec.id === id).nestedAction_id
     }else{
       nestedAction_id = id
     }

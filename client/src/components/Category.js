@@ -11,6 +11,14 @@ class Category extends Component {
   }
 
   shouldComponentUpdate = (nextProps, nextState) => {
+    
+    // prevents rerendering when the user makes a selection or unselection in Project component
+    // the category is handled essentially the same way as (Risk, Issue, Action) because of its similarity
+    // because of this, there will be another element added to the array on selection, but this element has nothing relevant for rendering
+    if(nextProps.category === 'Project' && this.props.category === 'Project'){
+      return false
+    }
+
     //only renders again if the amount of items in the array has changed, otherwise, even if the items in the array changes due to other components, this component will be unaffected
     if(nextProps.categoryArray.length !== this.props.categoryArray.length){
       return true

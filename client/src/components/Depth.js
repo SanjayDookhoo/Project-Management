@@ -13,8 +13,27 @@ class Depth extends Component {
     dataRetrieved: false
   }
 
+  shouldComponentUpdate = (nextProps, nextState) => {
+    // new information needs to be passed as a prop 
+    // if(nextProps.selected !== this.props.selected){ 
+    //   return true
+    // }
+
+    //already got the records, no need to update again
+    if(nextState.dataRetrieved === true && this.state.dataRetrieved === true){ 
+      return false
+    }
+
+    //first time getting the records
+    if(nextState.dataRetrieved === true){
+      return true
+    }
+
+    return false
+  }
+
   handleGetRecords = () => {
-    const { category, depth } = this.props 
+    const { depth } = this.props 
     const { projectFilter } = this.props 
     let self = this //The callback in the axios function is called not from within your function, so the 'this' is not pointing to what you expect, i.e., your class.
 
@@ -63,23 +82,7 @@ class Depth extends Component {
 
   handleNewRecord = (rec) => {
     let self = this //The callback in the axios function is called not from within your function, so the 'this' is not pointing to what you expect, i.e., your class.
-    if(this.props.depth === 0){
-      const { name, description, budget, status, dueTimestamp} = rec
-      axios.post(`${process.env.REACT_APP_API_URL}/${self.props.category}`, {
-        name,
-        description,
-        budget,
-        status,
-        dueTimestamp,
-      })
-      .then(function (response) {
-        if(response.status === 200){
-          self.setState({
-            records: [...self.state.records,response.data]
-          })
-        }
-      })
-    }else if(this.props.depth === 1){
+    if(this.props.depth === 1){
       const { name, description, budget, status, dueTimestamp} = rec
       axios.post(`${process.env.REACT_APP_API_URL}/${self.props.category}`, {
         name,
@@ -119,7 +122,6 @@ class Depth extends Component {
   handleModifyRecord = (rec) => {
     let self = this //The callback in the axios function is called not from within your function, so the 'this' is not pointing to what you expect, i.e., your class.
     const { id, name, description, budget, status, dueTimestamp} = rec
-console.log(rec)
     const modifyFrom = this.props.depth === 1 ? this.props.category : 'NestedAction'
 
     axios.put(`${process.env.REACT_APP_API_URL}/${modifyFrom}`, {
@@ -167,14 +169,14 @@ console.log(rec)
   }
 
   componentDidUpdate = () => {
-    console.log(new Date().toLocaleTimeString(),"ContainerProject.js update")
+    console.log("Depth rendered again")
   }
 
   colorSelector(category, depth=0) {
     let color = null
     let colorRange = ['darken-4','darken-3','darken-2','darken-1','','lighten-1','lighten-2','lighten-3','lighten-4','lighten-5'] //materialize color range
 
-    if(depth==1){
+    if(depth===1){
       if(category === 'Project'){
         color = 'purple'
       }else if(category === 'Risk'){
@@ -197,7 +199,7 @@ console.log(rec)
 
   render() {
     const { category, depth } = this.props
-    const { selected, edit, option } = this.props
+    const { selected } = this.props
 
     const color = this.colorSelector(category, depth)
 
@@ -226,7 +228,7 @@ console.log(rec)
 
             color = {color} 
             
-            record = {this.state.records.find(record => record.id == selected)} 
+            record = {this.state.records.find(record => record.id === selected)} 
             
             handleNewRecord = {this.handleNewRecord} 
             handleModifyRecord = {this.handleModifyRecord} 
@@ -253,11 +255,8 @@ console.log(rec)
 const mapStateToProps = (state, ownProps) => {
 return {
     selected: state[ownProps.category].find(cat => cat.depth === ownProps.depth).selected,
-    edit: state[ownProps.category].find(cat => cat.depth === ownProps.depth).edit,
-    option: state[ownProps.category].find(cat => cat.depth === ownProps.depth).option,
-
-    ...(ownProps.category !== 'Project') && {projectFilter: state.Project[0].selected}, //only one or no project will ever exist in the list, only one will exist once this component can be reached
-    ...(ownProps.depth >= 2) && { nestedAction_id: state[ownProps.category].find(cat => cat.depth === ownProps.depth).nestedAction_id },
+    projectFilter: state.Project[0].selected,
+    ...(ownProps.depth >= 2) && { nestedAction_id: state[ownProps.category].find(cat => cat.depth === ownProps.depth).nestedAction_id }, //only get the nestedAction_id when it is accessible
   }
 }
 
