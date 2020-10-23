@@ -3,7 +3,7 @@
 import React, { Component } from 'react';
 import Depth from './Depth';
 import { connect } from 'react-redux'
-import Reports from '../pages/Reports';
+import Reports from './Reports';
 
 class Category extends Component {
   componentDidUpdate = () => {
@@ -11,7 +11,8 @@ class Category extends Component {
   }
 
   shouldComponentUpdate = (nextProps, nextState) => {
-    
+
+
     // prevents rerendering when the user makes a selection or unselection in Project component
     // the category is handled essentially the same way as (Risk, Issue, Action) because of its similarity
     // because of this, there will be another element added to the array on selection, but this element has nothing relevant for rendering
@@ -28,7 +29,8 @@ class Category extends Component {
   }
 
   render() {
-    const { category, categoryArray } = this.props
+    const { category } = this.props
+    const { categoryArray, projectSelected } = this.props
 
     if(category !== 'Project'){
       const categoryList = categoryArray.sort((a, b) => a.depth - b.depth).map(categoryEl => {
@@ -63,7 +65,8 @@ class Category extends Component {
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    categoryArray: state[ownProps.category]
+    categoryArray: state[ownProps.category],
+    projectSelected: state.Project[0].selected === -1 ? false : true
   }
 }
 

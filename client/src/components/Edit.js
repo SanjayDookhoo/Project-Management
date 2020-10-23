@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux'
 import { changeEdit, changeOption } from '../actions/rootActions'
+import { statusField } from '../helperFunctions/mainHelper'
 
 class Edit extends Component {
   componentDidUpdate = (prevProps, prevState) => {
@@ -105,7 +106,7 @@ class Edit extends Component {
               </div>
               <div className="input-field">
                 <input id="status" type="number" min="0" max="100" className="validate white-text" value={status} onChange={this.handleChange}/>
-                <label htmlFor="status" className="active">Status</label>
+                <label htmlFor="status" className="active">{statusField(category, depth)} (%)</label>
               </div>
               <div className="input-field">
                 <input id="dueTimestamp" type="datetime-local" className="validate white-text" value={dueTimestamp} onChange={this.handleChange}/>

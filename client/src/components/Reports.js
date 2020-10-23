@@ -1,22 +1,31 @@
 import React, { Component } from 'react';
-import Category from '../components/Category';
+import { connect } from 'react-redux'
 
 class Reports extends Component {
   render() {
-    const { selectedProject } = this.props
-
-    return (
+    const { projectSelected } = this.props
+    
+    if(projectSelected){
+      return (
         <div>
-            reports for {selectedProject}
+            reports 
         </div>
-    );
+      )
+    }else{
+      return null
+    }
   }
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state, ownProps) => {
   return {
-    selectedProject: state.Project.selected
+    projectSelected: state.Project[0].selected === -1 ? false : true
   }
 }
 
-export default connect(mapStateToProps)(withRouter(Reports));
+const mapDispatchToProps = (dispatch) => {
+  return {
+    
+  }
+}
+export default connect(mapStateToProps,mapDispatchToProps)(Reports);

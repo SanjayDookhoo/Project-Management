@@ -6,7 +6,6 @@ import Projects from './pages/Projects'
 import Risks from './pages/Risks'
 import Issues from './pages/Issues'
 import Actions from './pages/Actions'
-import Reports from './pages/Reports'
 
 function App() {
   return (
@@ -19,7 +18,6 @@ function App() {
           <Route path='/project/risks' component={Risks} />
           <Route path='/project/issues' component={Issues} />
           <Route path='/project/actions' component={Actions} />
-          <Route path='/project/reports' component={Reports} />
         </div>
       </div>
   </BrowserRouter>
