@@ -83,24 +83,23 @@ Download or Clone this github repo to your desired location on your PC
 
 #### Backend with a newly created, clean database copy
 
-Navigate to the directory, and open the command line/Terminal at that location
-cd Project-Management/server
-pip install pipenv
-pipenv shell
-pipenv install
-python create_db.py 
-python app.py
+- Navigate to the directory, and open the command line/Terminal at that location
+- cd Project-Management/server
+- pip install pipenv
+- pipenv shell
+- pipenv install
+- python create_db.py 
+- python app.py
 
 #### Backend with the provided example database to demo the application
 
-copy examples/db.sqlite ./
-
-Navigate to the directory, and open the command line/Terminal at that location
-cd Project-Management/server
-pip install pipenv
-pipenv shell
-pipenv install
-python app.py
+- Navigate to the directory, and open the command line/Terminal at that location
+- cd Project-Management/server
+- copy examples/db.sqlite ./
+- pip install pipenv
+- pipenv shell
+- pipenv install
+- python app.py
 
 ### Frontend
 
