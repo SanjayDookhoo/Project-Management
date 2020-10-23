@@ -85,6 +85,7 @@ const rootReducer = (state = initState, action) => {
       temp.edit = false
       temp.delete = false
       temp.option = true
+      temp.recordToEdit = action.recordToEdit //this will allow the edit component to see which record there is to edit if there is one, prevents needing to rerender entire parent component
 
       const newRecord = {
         depth: action.depth + 1,
@@ -112,6 +113,7 @@ const rootReducer = (state = initState, action) => {
 
   if(action.type === 'CHANGE_EDIT'){
     const temp = state[action.category].find(cat => cat.depth === action.depth)
+    temp.delete = false
     temp.edit = action.value
 
     if(action.value)
@@ -123,7 +125,6 @@ const rootReducer = (state = initState, action) => {
         ]
       }
     else {
-      temp.selected = -1
       return {
         ...state,
         [action.category]: [
@@ -149,10 +150,12 @@ const rootReducer = (state = initState, action) => {
 
   if(action.type === 'CHANGE_DELETE'){
     const temp = state[action.category].find(cat => cat.depth === action.depth)
+    temp.edit = false
     temp.delete = action.value
 
     if(action.success){
       temp.selected = -1
+      temp.option = true
       return {
         ...state,
         [action.category]: [
@@ -161,7 +164,11 @@ const rootReducer = (state = initState, action) => {
         ]
       }
     }else{
-      temp.option = true
+      if(action.value){
+        temp.option = false
+      }else{
+        temp.option = true
+      }
       return {
         ...state,
         [action.category]: [

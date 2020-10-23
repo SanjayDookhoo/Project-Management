@@ -1,10 +1,11 @@
-export const changeSelected = (category, depth, value, nestedAction_id = null) => {
+export const changeSelected = (category, depth, value, nestedAction_id = null, recordToEdit = null) => {
   return {
     type: 'CHANGE_SELECTED',
     value,
     depth,
     category,
-    nestedAction_id
+    nestedAction_id,
+    recordToEdit
   }
 }
 

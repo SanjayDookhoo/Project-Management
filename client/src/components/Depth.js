@@ -14,10 +14,10 @@ class Depth extends Component {
   }
 
   shouldComponentUpdate = (nextProps, nextState) => {
-    // new information needs to be passed as a prop 
-    // if(nextProps.selected !== this.props.selected){ 
-    //   return true
-    // }
+    //already got the records, no need to update again
+    if(nextState.records !== this.state.records){ 
+      return true
+    }
 
     //already got the records, no need to update again
     if(nextState.dataRetrieved === true && this.state.dataRetrieved === true){ 

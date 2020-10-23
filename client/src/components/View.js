@@ -14,14 +14,16 @@ class View extends Component {
   handleFocus = (id) => {
     const { category, depth, records } = this.props
     const { changeSelected_ } = this.props
+    let recordToEdit = records.find(rec => rec.id === id)
     let nestedAction_id = null
+
     if(depth === 1){
       nestedAction_id = records.find(rec => rec.id === id).nestedAction_id
     }else{
       nestedAction_id = id
     }
     
-    changeSelected_(category, depth, id, nestedAction_id)
+    changeSelected_(category, depth, id, nestedAction_id, recordToEdit)
   }
 
   handleUnfocus = () => {
@@ -121,7 +123,7 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    changeSelected_: (category, depth, value, nestedAction_id) => { dispatch(changeSelected(category, depth, value, nestedAction_id)) },
+    changeSelected_: (category, depth, value, nestedAction_id, recordToEdit) => { dispatch(changeSelected(category, depth, value, nestedAction_id, recordToEdit)) },
   }
 }
 

@@ -3,22 +3,34 @@ import { connect } from 'react-redux'
 import { changeEdit, changeOption } from '../actions/rootActions'
 
 class Edit extends Component {
-  componentDidUpdate = (prevProps) => {
+  componentDidUpdate = (prevProps, prevState) => {
     console.log(new Date().toLocaleTimeString(),"Edit.js update")
 
-    if(this.props.record != prevProps.record){
-      if(this.props.record){
-        const { id, name, description, budget, status, dueTimestamp } = this.props.record
-        const dueTimestampSplit = dueTimestamp.split(':')
-        this.setState({
-          id,
-          name,
-          description,
-          budget,
-          status,
-          dueTimestamp:  dueTimestamp==='0001-01-01T01:01:00' ? '' : dueTimestampSplit[0] + ':' + dueTimestampSplit[1]
-        })
-      }
+    const { modifyOrCreate, recordToEdit } = this.props
+
+    if(this.state === prevState && modifyOrCreate === 'modify' ){
+      console.log("yes")
+      const { id, name, description, budget, status, dueTimestamp } = recordToEdit
+      const dueTimestampSplit = dueTimestamp.split(':')
+      
+      this.setState({
+        id,
+        name,
+        description,
+        budget,
+        status,
+        dueTimestamp:  dueTimestamp==='0001-01-01T01:01:00' ? '' : dueTimestampSplit[0] + ':' + dueTimestampSplit[1]
+      })
+    }
+    
+    if(this.state === prevState && modifyOrCreate === 'create' ){
+      this.setState({
+        name: '',
+        description: '',
+        budget: 0,
+        status: 0,
+        dueTimestamp: '',
+      })
     }
   }
 
@@ -130,6 +142,7 @@ const mapStateToProps = (state, ownProps) => {
   return {
     edit: state[category].find(cat => cat.depth === depth).edit,
     modifyOrCreate: state[category].find(cat => cat.depth === depth).selected !== -1 ? 'modify' : 'create',
+    recordToEdit: state[category].find(cat => cat.depth === depth).recordToEdit
   }
 }
 
