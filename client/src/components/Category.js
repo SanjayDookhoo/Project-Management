@@ -6,6 +6,19 @@ import { connect } from 'react-redux'
 import Reports from '../pages/Reports';
 
 class Category extends Component {
+  componentDidUpdate = () => {
+    console.log("Category rendered again")
+  }
+
+  shouldComponentUpdate = (nextProps, nextState) => {
+    //only renders again if the amount of items in the array has changed, otherwise, even if the items in the array changes due to other components, this component will be unaffected
+    if(nextProps.categoryArray.length !== this.props.categoryArray.length){
+      return true
+    }
+
+    return false
+  }
+
   render() {
     const { category, categoryArray } = this.props
 

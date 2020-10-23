@@ -7,10 +7,10 @@ const Navbar = () => {
       <div className="container">
         <Link className="brand-logo" to="/"> Project Management </Link>
         <ul className="right">
+          <li> <NavLink exact to='/'> Projects </NavLink> </li>
           <li> <NavLink to="/project/risks"> Risks </NavLink> </li>
           <li> <NavLink to='/project/issues'> Issues </NavLink> </li>
           <li> <NavLink to='/project/actions'> Actions </NavLink> </li>
-          <li> <NavLink to='/project/reports'> Reports </NavLink> </li>
         </ul>
       </div>
     </nav> 
