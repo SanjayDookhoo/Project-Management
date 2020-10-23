@@ -5,10 +5,10 @@ This is a project that was developed as part of the evaluation process of a job 
 Frontend: React & Redux
 Backend: Python with Flask
 
-# Context 
+## Context 
 Companies invest millions of dollars in projects to achieve their objectives. However these projects can go awry for very many reasons, some of the most common reasons are actions ( a small task related to a project e.g. Purchase supplies ) are not completed on time, issues are not resolved/dealt with ( something that prevents the project from moving forward e.g. supply store closed down), and risks ( something that can go wrong) and not properly tracked and dealt with. Project managers exist to (as the name implies) manage these projects and the things related to them ( e.g. actions, issues, risks).
 
-# Task
+## Task
 You are to build a project management web application where a user can create projects, and
 add related actions, issues, and risks.
 A project should at least consist of an identifier, name, budget and description ( you are
@@ -21,7 +21,7 @@ Actions, Issues and Risks, should all have at least the following fields:
 
 You are again encouraged to think about what other fields each of these should have and add them in
 
-# Objectives
+## Objectives
 
 - Project [CRUD]
 - A list of all projects [View]
@@ -33,7 +33,7 @@ You are again encouraged to think about what other fields each of these should h
 doing your data models)
 - ...Anything else you would like to include
 
-# Interpretation and Design Choice Justification
+## Interpretation and Design Choice Justification
 
 Since this was requested to be built on React & Redux, my goal was to maximize the potential of this project being built on that framework. The creation of reusable components would be the bread and butter of this project while utilizing Redux where possible to reduce re-renders and ensuring a easy to understand code and process flow.
 
@@ -49,9 +49,9 @@ From this new understanding, I attempted to create a project where; Projects, Ri
 
 the process flow I saw working best was: 
 
-Project -> Risk -> Nested Action -> Nested Action ...
-Project -> Issue -> Nested Action -> Nested Action ...
-Project -> Action -> Nested Action -> Nested Action ...
+- Project -> Risk -> Nested Action -> Nested Action ...
+- Project -> Issue -> Nested Action -> Nested Action ...
+- Project -> Action -> Nested Action -> Nested Action ...
 
 A single project, would be associated with a list of Risks, Issues, and Actions. But these items can have Nested Actions, that have the same fields. This would allow for an infinitely stackable category, where all information and situation change can be documented as an Action to be handled.
 
@@ -59,29 +59,29 @@ The most relevant information for any Project Management Application was used as
 
 Fields
 
-name
-description
-status (status was interpreted to be a percentage)
-budget (budget was interpreted as running costs, costs to get things done)
-dueTimestamp
-createdTimestamp
+- name
+- description
+- status (status was interpreted to be a percentage)
+- budget (budget was interpreted as running costs, costs to get things done)
+- dueTimestamp
+- createdTimestamp
 
-# To Begin
+## To Begin
 
-# Dependencies
+### Dependencies
 
-These are the main software required to be installed on your PC to proceed with running the application. I can only guarantee that the software works as intended from my environment, which is the software versions specified below
+These are the main software required to be installed on your PC to proceed with running the application. I can only guarantee that the software works as intended from my environment, which is the software versions specified below. Most likely version numbers close to what was mentioned should be sufficient.
 
-Python 3.9
-Node 12.13.1
+- Python 3.9
+- Node 12.13.1
 
-## Download or Clone
+### Download or Clone
 
 Download or Clone this github repo to your desired location on your PC
 
-## Backend
+### Backend
 
-### Backend with a newly created, clean database copy
+#### Backend with a newly created, clean database copy
 
 Navigate to the directory, and open the command line/Terminal at that location
 cd Project-Management/server
@@ -91,7 +91,7 @@ pipenv install
 python create_db.py 
 python app.py
 
-### Backend with the provided example database to demo the application
+#### Backend with the provided example database to demo the application
 
 copy examples/db.sqlite ./
 
@@ -102,7 +102,7 @@ pipenv shell
 pipenv install
 python app.py
 
-## Frontend
+### Frontend
 
 steps follows directly after the above steps are completed
 
@@ -110,7 +110,7 @@ cd ../client
 npm install
 npm start
 
-### Notes
+#### Notes
 
 By default, the API is supposed to start at http://127.0.0.1:5000/ or http://localhost:5000/
 If this was not the case, please change the .env file contents to reflect what your endpoint it
