@@ -33,6 +33,9 @@ class Reports extends Component {
           errorHandler(response)
         }
       })
+      .catch(function(error){
+        errorHandler(error)
+      })
       //chart2
       axios.get(`${process.env.REACT_APP_API_URL}/report_overview_project_budget`, {
         params: {
@@ -51,6 +54,9 @@ class Reports extends Component {
           errorHandler(response)
         }
       })
+      .catch(function(error){
+        errorHandler(error)
+      })
     }else{
       let count = 0
       //chart1
@@ -67,6 +73,9 @@ class Reports extends Component {
           errorHandler(response)
         }
       })
+      .catch(function(error){
+        errorHandler(error)
+      })
       //chart2
       axios.get(`${process.env.REACT_APP_API_URL}/report_overview_issue`, {})
       .then(function (response) {
@@ -80,6 +89,9 @@ class Reports extends Component {
         }else{
           errorHandler(response)
         }
+      })
+      .catch(function(error){
+        errorHandler(error)
       })
       //chart3
       axios.get(`${process.env.REACT_APP_API_URL}/report_overview_action`, {})
@@ -95,6 +107,9 @@ class Reports extends Component {
           errorHandler(response)
         }
       })
+      .catch(function(error){
+        errorHandler(error)
+      })
       //chart4
       axios.get(`${process.env.REACT_APP_API_URL}/report_overview_budget`, {})
       .then(function (response) {
@@ -108,6 +123,9 @@ class Reports extends Component {
         }else{
           errorHandler(response)
         }
+      })
+      .catch(function(error){
+        errorHandler(error)
       })
     }
   }

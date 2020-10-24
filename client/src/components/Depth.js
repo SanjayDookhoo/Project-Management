@@ -72,6 +72,9 @@ class Depth extends Component {
           errorHandler(response)
         }
       })
+      .catch(function(error){
+        errorHandler(error)
+      })
     } else{
       axios.get(`${process.env.REACT_APP_API_URL}/${this.props.category}s`, {})
       .then(function (response) {
@@ -83,6 +86,9 @@ class Depth extends Component {
         }else{
           errorHandler(response)
         }
+      })
+      .catch(function(error){
+        errorHandler(error)
       })
     }
   }
@@ -109,6 +115,9 @@ class Depth extends Component {
           errorHandler(response)
         }
       })
+      .catch(function(error){
+        errorHandler(error)
+      })
     }else if(this.props.depth >= 2){
       const { name, description, budget, status, assigned_to, dueTimestamp} = rec
       axios.post(`${process.env.REACT_APP_API_URL}/NestedAction`, {
@@ -128,6 +137,9 @@ class Depth extends Component {
         }else{
           errorHandler(response)
         }
+      })
+      .catch(function(error){
+        errorHandler(error)
       })
     }
   }
@@ -159,6 +171,9 @@ class Depth extends Component {
         errorHandler(response)
       }
     })
+    .catch(function(error){
+      errorHandler(error)
+    })
   }
 
   handleDeleteRecord = (id) => {
@@ -180,6 +195,9 @@ class Depth extends Component {
       }else{
         errorHandler(response)
       }
+    })
+    .catch(function(error){
+      errorHandler(error)
     })
   }
   
