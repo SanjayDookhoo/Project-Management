@@ -113,4 +113,4 @@ steps follows directly after the above steps are completed
 #### Notes
 
 By default, the API is supposed to start at http://127.0.0.1:5000/ or http://localhost:5000/
-If this was not the case, please change the .env file contents to reflect what your endpoint it
+If this was not the case, please change the .env file contents to reflect what your endpoint is on the terminal
