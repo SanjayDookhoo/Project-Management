@@ -8,7 +8,7 @@ class Actions extends Component {
         <div>
           <ProjectSelectedCheck>
             <Category
-              category="Action"
+              category='Action'
             />
           </ProjectSelectedCheck>
         </div>

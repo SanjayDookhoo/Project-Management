@@ -8,7 +8,7 @@ class Issues extends Component {
         <div>
           <ProjectSelectedCheck>
             <Category
-              category="Issue"
+              category='Issue'
             />
           </ProjectSelectedCheck>
         </div>

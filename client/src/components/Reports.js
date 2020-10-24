@@ -130,22 +130,24 @@ class Reports extends Component {
     }
   }
 
+  // initial mount when in Project page will get data
+  componentDidMount= () => {
+    this.updateState()
+  }
+  // while as this will get data whenever the project changes
   componentDidUpdate = (prevProps, prevState) => {
-    console.log("Reports.js update")
+    // console.log("Reports.js update")
 
     if(prevProps.projectSelected!==this.props.projectSelected)
       this.updateState()
     
   }
 
-  componentDidMount= () => {
-    this.updateState()
-  }
-
   state = {
     charts: [],
   }
 
+  // when to rerender
   shouldComponentUpdate = (nextProps, nextState) => {
     if(nextState !== this.state){
       return true
@@ -173,7 +175,7 @@ class Reports extends Component {
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    projectSelected: state.Project[0].selected
+    projectSelected: state.Project.find(cat => cat.depth === ownProps.depth).selected
   }
 }
 

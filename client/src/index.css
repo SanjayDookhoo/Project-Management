@@ -12,23 +12,16 @@ code {
     monospace;
 } */
 
+/* highlights active item in navbar */
 nav a.active{
   border-bottom: 5px solid #333;
   transition: all ease 0.5s;
 }
-
+/* highlights hovered item, and ensures that the user knows that the item is intuitively clickable */
 .hoverable:hover{
   cursor: pointer;
 } 
-
-.btn{
-  margin-right: 10px;
-}
-
+/* full width button */
 .fwbtn > .btn{
   width: 100%;
-}
-
-.datepicker-row{
-  color: black!important;
 }

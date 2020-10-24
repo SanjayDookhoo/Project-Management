@@ -205,9 +205,9 @@ class Depth extends Component {
     this.handleGetRecords()
   }
 
-  componentDidUpdate = () => {
-    console.log("Depth.js update")
-  }
+  // componentDidUpdate = () => {
+  //   console.log("Depth.js update")
+  // }
 
   colorSelector(category, depth=0) {
     let color = null
@@ -236,7 +236,6 @@ class Depth extends Component {
 
   render() {
     const { category, depth } = this.props
-    const { selected } = this.props
 
     const color = this.colorSelector(category, depth)
 
@@ -265,8 +264,6 @@ class Depth extends Component {
 
             color = {color} 
             
-            record = {this.state.records.find(record => record.id === selected)} 
-            
             handleNewRecord = {this.handleNewRecord} 
             handleModifyRecord = {this.handleModifyRecord} 
           />
@@ -291,7 +288,6 @@ class Depth extends Component {
 
 const mapStateToProps = (state, ownProps) => {
 return {
-    selected: state[ownProps.category].find(cat => cat.depth === ownProps.depth).selected,
     projectFilter: state.Project[0].selected,
     ...(ownProps.depth >= 2) && { nestedAction_id: state[ownProps.category].find(cat => cat.depth === ownProps.depth).nestedAction_id }, //only get the nestedAction_id when it is accessible
   }

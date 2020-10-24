@@ -4,26 +4,27 @@ import { connect } from 'react-redux'
 import { changeEdit, changeDelete, changeOption } from '../actions/rootActions'
 
 class Option extends Component {
-  componentDidUpdate = () => {
-    console.log("Option.js update")
-  }
+  // componentDidUpdate = () => {
+  //   console.log("Option.js update")
+  // }
 
-  handleStartManagementClick = () => {
+  //redirects from projects page, to risks page related to that project
+  handleStartManagementClick = () => { 
     this.props.history.push('/project/risks')
   }
 
   handleEditorCreate = () => {
     const { category, depth, changeOption_, changeEdit_ } = this.props
 
-    changeOption_(category, depth, false)
-    changeEdit_(category, depth, true)
+    changeOption_(category, depth, false)  // closes option
+    changeEdit_(category, depth, true) // opens edit
   }
 
   handleDelete = () => {
     const { category, depth, changeOption_, changeDelete_ } = this.props
 
-    changeOption_(category, depth, false)
-    changeDelete_(category, depth, true)
+    changeOption_(category, depth, false) // closes option
+    changeDelete_(category, depth, true) // opens delete
   }
 
   render() {

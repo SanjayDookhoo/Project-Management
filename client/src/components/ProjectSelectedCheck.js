@@ -14,7 +14,7 @@ class ProjectSelectedCheck extends Component {
   }
 
   render() {
-     // if this is not specified, the component will attempt to render the childing after the redirect is initiated
+     // if this is not specified, the component will attempt to render the childing after the redirect is initiated 
      // becuase the redirect takes some time the children attempts to load despite this shouldnt be the case
      // in some scenarios it would create a 'memory leak', this is to prevent it from happening at all
     if (this.props.projectSelected){

@@ -53,6 +53,9 @@ const initState ={
   ]
 }
 
+
+//if action.value is -1, deletes all higher depth records, returns back the list with the state on (category and depth) refreshed
+//if action.value, then a new record is created with the nestedAction_id passed to create the nesting connect, and the current record has recordToEdit passed to it for the edit component
 const rootReducer = (state = initState, action) => {
   if(action.type === 'CHANGE_SELECTED'){
     if(action.value === -1){
@@ -109,30 +112,23 @@ const rootReducer = (state = initState, action) => {
     }
   }
 
+  // flips the state of edit based on action.value passed in
+  //ensures delete is always false no matter its state
   if(action.type === 'CHANGE_EDIT'){
     const temp = state[action.category].find(cat => cat.depth === action.depth)
     temp.delete = false
     temp.edit = action.value
 
-    if(action.value)
-      return {
-        ...state,
-        [action.category]: [
-          ...state[action.category].filter(cat => cat.depth !== action.depth),
-          temp
-        ]
-      }
-    else {
-      return {
-        ...state,
-        [action.category]: [
-          ...state[action.category].filter(cat => cat.depth !== action.depth),
-          temp
-        ]
-      }
+    return {
+      ...state,
+      [action.category]: [
+        ...state[action.category].filter(cat => cat.depth !== action.depth),
+        temp
+      ]
     }
   }
 
+  // flips the state of option based on action.value passed in
   if(action.type === 'CHANGE_OPTION'){
     const temp = state[action.category].find(cat => cat.depth === action.depth)
     temp.option = action.value

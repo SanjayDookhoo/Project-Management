@@ -8,7 +8,7 @@ class Risks extends Component {
         <div>
           <ProjectSelectedCheck>
             <Category
-              category="Risk"
+              category='Risk'
             />
           </ProjectSelectedCheck>
         </div>

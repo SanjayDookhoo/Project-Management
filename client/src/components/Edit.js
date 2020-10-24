@@ -5,11 +5,12 @@ import { statusField } from '../helperFunctions/mainHelper'
 
 class Edit extends Component {
   componentDidUpdate = (prevProps, prevState) => {
-    console.log("Edit.js update")
+    // console.log("Edit.js update")
     const { modifyOrCreate, recordToEdit, edit } = this.props
-
+    
+    //when edit state is true and a item is selected, so modify is implied. this.state === prevState prevents the stack from overflowing everytime the state changes
     if(edit && this.state === prevState && modifyOrCreate === 'modify' ){
-      console.log("Edit.js update, expect another update, setting state in componentDidUpdate for Modify")
+      // console.log("Edit.js update, expect another update, setting state in componentDidUpdate for Modify")
       const { id, name, description, budget, status, assigned_to, dueTimestamp } = recordToEdit
       const dueTimestampSplit = dueTimestamp.split(':')
       
@@ -23,9 +24,9 @@ class Edit extends Component {
         dueTimestamp:  dueTimestamp==='0001-01-01T01:01:00' ? '' : dueTimestampSplit[0] + ':' + dueTimestampSplit[1]
       })
     }
-    
+    //when edit state is true and a item is not selected, so create is implied. this.state === prevState prevents the stack from overflowing everytime the state changes
     if(edit && this.state === prevState && modifyOrCreate === 'create' ){
-      console.log("Edit.js update, expect another update, setting state in componentDidUpdate for Create")
+      // console.log("Edit.js update, expect another update, setting state in componentDidUpdate for Create")
       this.setState({
         name: '',
         description: '',
@@ -46,6 +47,7 @@ class Edit extends Component {
     dueTimestamp: '',
   }
 
+  //targets state  based on the trigger of the value change event
   handleChange = (e) => {
     this.setState({
       [e.target.id]: e.target.value
@@ -94,7 +96,7 @@ class Edit extends Component {
     if(edit){
       return(
         <div className={`post card white-text ${color}`}> 
-          <form onSubmit={this.handleSave}>
+           <form onSubmit={this.handleSave}>  {/* used becuase enter key coutns as a submit, etc. */}
             <div className="card-content"> 
               <div className="input-field">
                 <input id="name" type="text" className="validate white-text" value={name} onChange={this.handleChange}/>
@@ -149,9 +151,9 @@ const mapStateToProps = (state, ownProps) => {
   const { category, depth } = ownProps
 
   return {
-    edit: state[category].find(cat => cat.depth === depth).edit,
-    modifyOrCreate: state[category].find(cat => cat.depth === depth).selected !== -1 ? 'modify' : 'create',
-    recordToEdit: state[category].find(cat => cat.depth === depth).recordToEdit
+    edit: state[category].find(cat => cat.depth === depth).edit, // is it time to edit right now
+    modifyOrCreate: state[category].find(cat => cat.depth === depth).selected !== -1 ? 'modify' : 'create', //if it is a modify or create
+    recordToEdit: state[category].find(cat => cat.depth === depth).recordToEdit //record to edit that is stored in redux
   }
 }
 

@@ -4,20 +4,21 @@ import { changeSelected } from '../actions/rootActions'
 import { statusField } from '../helperFunctions/mainHelper'
 
 class View extends Component {
-  shouldComponentUpdate = (nextProps, nextState) => {
-    return true
-  }
+  // shouldComponentUpdate = (nextProps, nextState) => {
+  //   return true
+  // }
 
-  componentDidUpdate = () => {
-    console.log("View.js update")
-  }
+  // componentDidUpdate = () => {
+  //   console.log("View.js update")
+  // }
 
   handleFocus = (id) => {
     const { category, depth, records } = this.props
     const { changeSelected_ } = this.props
-    let recordToEdit = records.find(rec => rec.id === id)
+    let recordToEdit = records.find(rec => rec.id === id) //finds record for passing to a dispatch, so the record can be stored in redux for later retrieval
     let nestedAction_id = null
 
+    //because of how it is to create relationships in the database to an eventual self referencing table, this is necessary to create the link frontend
     if(depth === 1){
       nestedAction_id = records.find(rec => rec.id === id).nestedAction_id
     }else{
@@ -45,14 +46,12 @@ class View extends Component {
              <td>{budget}</td>
              <td> <div className="center"> {status} % </div>
               <div className="progress">
-                  <div className="determinate" style={{width: + status + '%'}}></div>
+                  <div className="determinate" style={{width: + status + '%'}}></div> 
               </div>
              </td>
              <td>{assigned_to}</td>
              <td>{dueTimestamp === '0001-01-01T01:01:00' ? '' : new Date(dueTimestamp).toLocaleString()}</td>
              <td>{new Date(createdTimestamp).toLocaleString()}</td>
-             {/* <td>{dueTimestamp}</td>
-             <td>{createdTimestamp}</td> */}
           </tr>
        )
     })
@@ -64,7 +63,7 @@ class View extends Component {
     const { color, category, depth , selected, records } = this.props
     
     if(selected !== -1){
-      const projectName = records.find(project => project.id === selected).name
+      const recordName = records.find(project => project.id === selected).name //current selected record
 
       view = (
         <div>
@@ -72,7 +71,7 @@ class View extends Component {
             <div className="card-content" onClick={this.handleUnfocus}> 
               <div className={`post card white-text ${color} hoverable`}> 
                 <div className="card-content">
-                  <h5> <b>Selected: </b> {projectName} </h5>
+                  <h5> <b>Selected: </b> {recordName} </h5>
                 </div>
               </div>
             </div>
@@ -90,7 +89,7 @@ class View extends Component {
                       <th>Name</th>
                       <th>Description</th>
                       <th>Budget</th>
-                      <th> {statusField(category, depth)}% </th> 
+                      <th> {statusField(category, depth)}% </th>
                       <th>Assigned To</th>
                       <th>Due Date</th>
                       <th>Created Date</th>
@@ -105,6 +104,7 @@ class View extends Component {
         </div>
       ) : (
         <div>
+          {/* if no information has been stored in the records state yet, alert user */}
           <div className={`post card white-text ${color}`}> 
             <div className="card-content"> 
               No {`${depth >= 2 ? 'Nested Action' : category}s`}
@@ -120,7 +120,7 @@ class View extends Component {
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    selected: state[ownProps.category].find(cat => cat.depth === ownProps.depth).selected,
+    selected: state[ownProps.category].find(cat => cat.depth === ownProps.depth).selected, // selected item in this instance of view component
   }
 }
 

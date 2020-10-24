@@ -4,15 +4,15 @@ import React, { Component } from 'react';
 import Depth from './Depth';
 import { connect } from 'react-redux'
 import Reports from './Reports';
+import ProjectSelectedCheck from './ProjectSelectedCheck';
+import Projects from '../pages/Projects';
 
 class Category extends Component {
-  componentDidUpdate = () => {
-    console.log("Category update")
-  }
+  // componentDidUpdate = () => {
+  //   console.log("Category update")
+  // }
 
   shouldComponentUpdate = (nextProps, nextState) => {
-
-
     // prevents rerendering when the user makes a selection or unselection in Project component
     // the category is handled essentially the same way as (Risk, Issue, Action) because of its similarity
     // because of this, there will be another element added to the array on selection, but this element has nothing relevant for rendering
@@ -34,6 +34,7 @@ class Category extends Component {
 
     if(category !== 'Project'){
       const categoryArrayLen = categoryArray.length
+      // renders list of categories; Projects, Risks, Issues, Actions, NestedActions
       const categoryList = categoryArray.sort((a, b) => a.depth - b.depth).map((categoryEl, index) => {
         return (
           <div key={category+categoryEl.depth}>
@@ -61,11 +62,15 @@ class Category extends Component {
     }else{
       return (
         <div>
+          {/* when category is project, only render one depth and render reports */}
           <Depth
             depth={1}
             category={category}
           />
-          <Reports />
+          <Reports 
+            depth={1}
+            category={category}
+          />
         </div>
       )
     }
@@ -76,7 +81,7 @@ class Category extends Component {
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    categoryArray: state[ownProps.category],
+    categoryArray: state[ownProps.category], //retrieves array of specific category
     projectSelected: state.Project[0].selected === -1 ? false : true
   }
 }

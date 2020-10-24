@@ -6,7 +6,7 @@ class Projects extends Component {
     return (
         <div>
           <Category
-            category="Project"
+            category='Project'
           />
         </div>
     );

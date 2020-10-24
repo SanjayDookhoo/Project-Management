@@ -3,27 +3,28 @@ import { connect } from 'react-redux'
 import { changeDelete } from '../actions/rootActions'
 
 class Delete extends Component {
-  componentDidUpdate = () => {
-    console.log("delete.js update")
-  }
+  // componentDidUpdate = () => {
+  //   console.log("delete.js update")
+  // }
 
   handleDelete = () => {
     const { category, depth, handleDeleteRecord } = this.props
     const { selected, changeDelete_ } = this.props
-    changeDelete_(category, depth, false, true)
-    handleDeleteRecord(selected)
+    changeDelete_(category, depth, false, true) // close delete component and propagate necessary change (wont be able to see nested items anymore)
+    handleDeleteRecord(selected) // function passed from parent to handle deleting
   }
 
   handleCancel = () => {
     const { category, depth } = this.props
     const { changeDelete_ } = this.props
-    changeDelete_(category, depth, false)
+    changeDelete_(category, depth, false) // close delete component
   }
 
 
   render() {
     const { color } = this.props
 
+    //only renders when this prop changes from redux
     if(this.props.delete){
       return(
         <div className={`post card white-text ${color}`}> 
@@ -53,8 +54,8 @@ const mapStateToProps = (state, ownProps) => {
   const { category, depth } = ownProps
 
   return {
-    delete: state[category].find(cat => cat.depth === depth).delete,
-    selected: state[category].find(cat => cat.depth === depth).selected,
+    delete: state[category].find(cat => cat.depth === depth).delete, //if to delete
+    selected: state[category].find(cat => cat.depth === depth).selected, //item selected that would be deleted, if to delete
   }
 }
 
