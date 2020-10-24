@@ -288,7 +288,7 @@ class Depth extends Component {
 
 const mapStateToProps = (state, ownProps) => {
 return {
-    projectFilter: state.Project[0].selected,
+    projectFilter: state.Project.find(proj => proj.depth === 1).selected,
     ...(ownProps.depth >= 2) && { nestedAction_id: state[ownProps.category].find(cat => cat.depth === ownProps.depth).nestedAction_id }, //only get the nestedAction_id when it is accessible
   }
 }

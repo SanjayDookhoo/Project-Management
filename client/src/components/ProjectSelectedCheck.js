@@ -29,7 +29,7 @@ class ProjectSelectedCheck extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    projectSelected: state.Project[0].selected === -1 ? false : true
+    projectSelected: state.Project.find(proj => proj.depth === 1).selected === -1 ? false : true
   }
 }
 

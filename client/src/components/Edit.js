@@ -129,7 +129,7 @@ class Edit extends Component {
                   { this.props.project ? (
                       <button className="waves-effect waves-light btn" type="submit" name="action"><i className="material-icons left">save</i>Save {depth !== 1 ? 'Nested Action' : category}</button>
                     ) : (
-                      <button className="waves-effect waves-light btn" type="submit" name="action"><i className="material-icons left">create</i> {modifyOrCreate === 'modify' ? 'Edit' : 'Create'} {depth !== 1 ? 'Nested Action' : category}</button>
+                      <button className="waves-effect waves-light btn" type="submit" name="action"><i className="material-icons left">create</i> {modifyOrCreate === 'modify' ? 'Save' : 'Create'} {depth !== 1 ? 'Nested Action' : category}</button>
                     )
                   }
                 </div>

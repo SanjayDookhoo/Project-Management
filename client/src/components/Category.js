@@ -80,7 +80,7 @@ class Category extends Component {
 const mapStateToProps = (state, ownProps) => {
   return {
     categoryArray: state[ownProps.category], //retrieves array of specific category
-    projectSelected: state.Project[0].selected === -1 ? false : true
+    projectSelected: state.Project.find(proj => proj.depth === 1).selected === -1 ? false : true
   }
 }
 

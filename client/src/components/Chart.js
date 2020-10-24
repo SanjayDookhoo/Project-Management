@@ -61,6 +61,13 @@ class Chart extends Component {
               legend: {
                 display: false
               },
+              scales: {
+                  yAxes: [{
+                      ticks: {
+                          beginAtZero: true // prevents chartjs from using the lowest value as the base to match all others agains
+                      }
+                  }]
+              }
             }}
           />
         </div>
