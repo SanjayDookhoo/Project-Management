@@ -4,8 +4,6 @@ import React, { Component } from 'react';
 import Depth from './Depth';
 import { connect } from 'react-redux'
 import Reports from './Reports';
-import ProjectSelectedCheck from './ProjectSelectedCheck';
-import Projects from '../pages/Projects';
 
 class Category extends Component {
   // componentDidUpdate = () => {
