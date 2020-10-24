@@ -36,7 +36,7 @@ class View extends Component {
 
   renderTableData() {
     return this.props.records.sort((a, b) => a.id - b.id).map((project, index) => {
-       const { id, name, description, budget, status, dueTimestamp, createdTimestamp } = project
+       const { id, name, description, budget, status, assigned_to, dueTimestamp, createdTimestamp } = project
 
        return (
           <tr className="hoverable" key={id} onClick={() => this.handleFocus(id)}>
@@ -48,6 +48,7 @@ class View extends Component {
                   <div className="determinate" style={{width: + status + '%'}}></div>
               </div>
              </td>
+             <td>{assigned_to}</td>
              <td>{dueTimestamp === '0001-01-01T01:01:00' ? '' : new Date(dueTimestamp).toLocaleString()}</td>
              <td>{new Date(createdTimestamp).toLocaleString()}</td>
              {/* <td>{dueTimestamp}</td>
@@ -90,6 +91,7 @@ class View extends Component {
                       <th>Description</th>
                       <th>Budget</th>
                       <th> {statusField(category, depth)}% </th> 
+                      <th>Assigned To</th>
                       <th>Due Date</th>
                       <th>Created Date</th>
                     </tr>

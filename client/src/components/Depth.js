@@ -90,12 +90,13 @@ class Depth extends Component {
   handleNewRecord = (rec) => {
     let self = this //The callback in the axios function is called not from within your function, so the 'this' is not pointing to what you expect, i.e., your class.
     if(this.props.depth === 1){
-      const { name, description, budget, status, dueTimestamp} = rec
+      const { name, description, budget, status, assigned_to, dueTimestamp} = rec
       axios.post(`${process.env.REACT_APP_API_URL}/${self.props.category}`, {
         name,
         description,
         budget,
         status,
+        assigned_to,
         dueTimestamp,
         project_id: self.props.projectFilter
       })
@@ -109,12 +110,13 @@ class Depth extends Component {
         }
       })
     }else if(this.props.depth >= 2){
-      const { name, description, budget, status, dueTimestamp} = rec
+      const { name, description, budget, status, assigned_to, dueTimestamp} = rec
       axios.post(`${process.env.REACT_APP_API_URL}/NestedAction`, {
         name,
         description,
         budget,
         status,
+        assigned_to,
         dueTimestamp,
         parent_id: self.props.nestedAction_id
       })
@@ -131,8 +133,9 @@ class Depth extends Component {
   }
 
   handleModifyRecord = (rec) => {
+    
     let self = this //The callback in the axios function is called not from within your function, so the 'this' is not pointing to what you expect, i.e., your class.
-    const { id, name, description, budget, status, dueTimestamp} = rec
+    const { id, name, description, budget, status, assigned_to, dueTimestamp} = rec
     const modifyFrom = this.props.depth === 1 ? this.props.category : 'NestedAction'
 
     axios.put(`${process.env.REACT_APP_API_URL}/${modifyFrom}`, {
@@ -141,6 +144,7 @@ class Depth extends Component {
       description,
       budget,
       status,
+      assigned_to,
       dueTimestamp,
     })
     .then(function (response) {

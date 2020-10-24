@@ -10,7 +10,7 @@ class Edit extends Component {
 
     if(edit && this.state === prevState && modifyOrCreate === 'modify' ){
       console.log("Edit.js update, expect another update, setting state in componentDidUpdate for Modify")
-      const { id, name, description, budget, status, dueTimestamp } = recordToEdit
+      const { id, name, description, budget, status, assigned_to, dueTimestamp } = recordToEdit
       const dueTimestampSplit = dueTimestamp.split(':')
       
       this.setState({
@@ -19,6 +19,7 @@ class Edit extends Component {
         description,
         budget,
         status,
+        assigned_to,
         dueTimestamp:  dueTimestamp==='0001-01-01T01:01:00' ? '' : dueTimestampSplit[0] + ':' + dueTimestampSplit[1]
       })
     }
@@ -30,6 +31,7 @@ class Edit extends Component {
         description: '',
         budget: 0,
         status: 0,
+        assigned_to: '',
         dueTimestamp: '',
       })
     }
@@ -40,6 +42,7 @@ class Edit extends Component {
     description: '',
     budget: 0,
     status: 0,
+    assigned_to: '',
     dueTimestamp: '',
   }
 
@@ -70,6 +73,7 @@ class Edit extends Component {
       description: '',
       budget: 0,
       status: 0,
+      assigned_to: 0,
       dueTimestamp: '',
     })
   }
@@ -83,7 +87,7 @@ class Edit extends Component {
   }
 
   render() {
-    const { name, description, budget, status, dueTimestamp } = this.state
+    const { name, description, budget, status, assigned_to, dueTimestamp } = this.state
     const { color, category, depth, modifyOrCreate } = this.props
     const { edit } = this.props
 
@@ -107,6 +111,10 @@ class Edit extends Component {
               <div className="input-field">
                 <input id="status" type="number" min="0" max="100" className="validate white-text" value={status} onChange={this.handleChange}/>
                 <label htmlFor="status" className="active">{statusField(category, depth)} (%)</label>
+              </div>
+              <div className="input-field">
+                <input id="assigned_to" type="text" className="validate white-text" value={assigned_to} onChange={this.handleChange}/>
+                <label htmlFor="assigned_to" className="active">Assigned To</label>
               </div>
               <div className="input-field">
                 <input id="dueTimestamp" type="datetime-local" className="validate white-text" value={dueTimestamp} onChange={this.handleChange}/>

@@ -28,6 +28,7 @@ class Project(db.Model):
   description = db.Column(db.String(200))
   status = db.Column(db.Integer)
   budget = db.Column(db.Integer)
+  assigned_to = db.Column(db.String(100))
   dueTimestamp = db.Column(db.DateTime)
   createdTimestamp = db.Column(db.DateTime)
 
@@ -35,11 +36,12 @@ class Project(db.Model):
   issues = db.relationship("Issue", back_populates = "project", cascade = "all, delete, delete-orphan")
   actions = db.relationship("Action", back_populates = "project", cascade = "all, delete, delete-orphan")
 
-  def __init__(self, name, description, status, budget, dueTimestamp):
+  def __init__(self, name, description, status, budget, assigned_to, dueTimestamp):
     self.name = name
     self.description = description
     self.status = status
     self.budget = budget
+    self.assigned_to = assigned_to
     self.dueTimestamp = dueTimestamp
     self.createdTimestamp = datetime.now().replace(microsecond=0,second=0)
 
@@ -51,6 +53,7 @@ class Risk(db.Model):
   description = db.Column(db.String(200))
   status = db.Column(db.Integer)
   budget = db.Column(db.Integer)
+  assigned_to = db.Column(db.String(100))
   dueTimestamp = db.Column(db.DateTime)
   createdTimestamp = db.Column(db.DateTime)
 
@@ -61,11 +64,12 @@ class Risk(db.Model):
   nestedAction_id = db.Column(db.Integer, db.ForeignKey('nestedAction.id'))
   nestedAction = db.relationship("NestedAction", back_populates = "risk", cascade = "all, delete, delete-orphan", single_parent = True)
 
-  def __init__(self, name, description, status, budget, dueTimestamp, project_id, nestedAction_id):
+  def __init__(self, name, description, status, budget, assigned_to, dueTimestamp, project_id, nestedAction_id):
     self.name = name
     self.description = description
     self.status = status
     self.budget = budget
+    self.assigned_to = assigned_to
     self.dueTimestamp = dueTimestamp
     self.project_id = project_id
     self.nestedAction_id = nestedAction_id
@@ -79,6 +83,7 @@ class Issue(db.Model):
   description = db.Column(db.String(200))
   status = db.Column(db.Integer)
   budget = db.Column(db.Integer)
+  assigned_to = db.Column(db.String(100))
   dueTimestamp = db.Column(db.DateTime)
   createdTimestamp = db.Column(db.DateTime)
 
@@ -89,11 +94,12 @@ class Issue(db.Model):
   nestedAction_id = db.Column(db.Integer, db.ForeignKey('nestedAction.id'), nullable=False)
   nestedAction = db.relationship("NestedAction", back_populates = "issue", cascade = "all, delete, delete-orphan", single_parent = True)
 
-  def __init__(self, name, description, status, budget, dueTimestamp, project_id, nestedAction_id):
+  def __init__(self, name, description, status, budget, assigned_to, dueTimestamp, project_id, nestedAction_id):
     self.name = name
     self.description = description
     self.status = status
     self.budget = budget
+    self.assigned_to = assigned_to
     self.dueTimestamp = dueTimestamp
     self.project_id = project_id
     self.nestedAction_id = nestedAction_id
@@ -107,6 +113,7 @@ class Action(db.Model):
   description = db.Column(db.String(200))
   status = db.Column(db.Integer)
   budget = db.Column(db.Integer)
+  assigned_to = db.Column(db.String(100))
   dueTimestamp = db.Column(db.DateTime)
   createdTimestamp = db.Column(db.DateTime)
 
@@ -117,11 +124,12 @@ class Action(db.Model):
   nestedAction_id = db.Column(db.Integer, db.ForeignKey('nestedAction.id'), nullable=False)
   nestedAction = db.relationship("NestedAction", back_populates = "action", cascade = "all, delete, delete-orphan", single_parent = True)
 
-  def __init__(self, name, description, status, budget, dueTimestamp, project_id, nestedAction_id):
+  def __init__(self, name, description, status, budget, assigned_to, dueTimestamp, project_id, nestedAction_id):
     self.name = name
     self.description = description
     self.status = status
     self.budget = budget
+    self.assigned_to = assigned_to
     self.dueTimestamp = dueTimestamp
     self.project_id = project_id
     self.nestedAction_id = nestedAction_id
@@ -135,6 +143,7 @@ class NestedAction(db.Model):
   description = db.Column(db.String(200))
   status = db.Column(db.Integer)
   budget = db.Column(db.Integer)
+  assigned_to = db.Column(db.String(100))
   dueTimestamp = db.Column(db.DateTime)
   createdTimestamp = db.Column(db.DateTime)
 
@@ -145,11 +154,12 @@ class NestedAction(db.Model):
   issue = db.relationship("Issue", back_populates = "nestedAction")
   action = db.relationship("Action", back_populates = "nestedAction")
 
-  def __init__(self, name = "<used as link>", description = "<used as link>", status = 0, budget = 0, dueTimestamp = datetime.now().replace(microsecond=0,second=0), parent_id = db.null()):
+  def __init__(self, name = "<used as link>", description = "<used as link>", status = 0, budget = 0, assigned_to = '', dueTimestamp = datetime.now().replace(microsecond=0,second=0), parent_id = db.null()):
     self.name = name
     self.description = description
     self.status = status
     self.budget = budget
+    self.assigned_to = assigned_to
     self.dueTimestamp = dueTimestamp
     self.parent_id = parent_id
     self.createdTimestamp = datetime.now().replace(microsecond=0,second=0)
@@ -202,9 +212,11 @@ def add_project():
   description = request.json['description']
   status = request.json['status']
   budget = request.json['budget']
+  print(request.json['assigned_to'])
+  assigned_to = request.json['assigned_to']
   dueTimestamp = datetime.strptime(request.json['dueTimestamp'], '%Y-%m-%dT%H:%M') if request.json['dueTimestamp'] != '' else datetime(1,1,1,1,1)
 
-  new_project = Project(name, description, status, budget, dueTimestamp)
+  new_project = Project(name, description, status, budget, assigned_to, dueTimestamp)
 
   db.session.add(new_project)
   db.session.commit()
@@ -234,6 +246,7 @@ def update_project():
   description = request.json['description']
   status = request.json['status']
   budget = request.json['budget']
+  assigned_to = request.json['assigned_to']
   dueTimestamp = datetime.strptime(request.json['dueTimestamp'], '%Y-%m-%dT%H:%M') if request.json['dueTimestamp'] != '' else datetime(1,1,1,1,1)
   
   project = Project.query.get(id)
@@ -242,6 +255,7 @@ def update_project():
   project.description = description
   project.status = status
   project.budget = budget
+  project.assigned_to = assigned_to
   project.dueTimestamp = dueTimestamp
 
   db.session.commit()
@@ -266,6 +280,7 @@ def add_risk():
   description = request.json['description']
   status = request.json['status']
   budget = request.json['budget']
+  assigned_to = request.json['assigned_to']
   dueTimestamp = datetime.strptime(request.json['dueTimestamp'], '%Y-%m-%dT%H:%M') if request.json['dueTimestamp'] != '' else datetime(1,1,1,1,1)
   project_id = request.json['project_id']
 
@@ -276,7 +291,7 @@ def add_risk():
 
   nestedAction_id = new_nestedAction.id
 
-  new_risk = Risk(name, description, status, budget, dueTimestamp, project_id, nestedAction_id)
+  new_risk = Risk(name, description, status, budget, assigned_to, dueTimestamp, project_id, nestedAction_id)
 
   db.session.add(new_risk)
   db.session.commit()
@@ -306,6 +321,7 @@ def update_risk():
   description = request.json['description']
   status = request.json['status']
   budget = request.json['budget']
+  assigned_to = request.json['assigned_to']
   dueTimestamp = datetime.strptime(request.json['dueTimestamp'], '%Y-%m-%dT%H:%M') if request.json['dueTimestamp'] != '' else datetime(1,1,1,1,1)
   
   risk = Risk.query.get(id)
@@ -314,6 +330,7 @@ def update_risk():
   risk.description = description
   risk.status = status
   risk.budget = budget
+  risk.assigned_to = assigned_to
   risk.dueTimestamp = dueTimestamp
 
   db.session.commit()
@@ -338,6 +355,7 @@ def add_issue():
   description = request.json['description']
   status = request.json['status']
   budget = request.json['budget']
+  assigned_to = request.json['assigned_to']
   dueTimestamp = datetime.strptime(request.json['dueTimestamp'], '%Y-%m-%dT%H:%M') if request.json['dueTimestamp'] != '' else datetime(1,1,1,1,1)
   project_id = request.json['project_id']
 
@@ -348,7 +366,7 @@ def add_issue():
 
   nestedAction_id = new_nestedAction.id
 
-  new_issue = Issue(name, description, status, budget, dueTimestamp, project_id, nestedAction_id)
+  new_issue = Issue(name, description, status, budget, assigned_to, dueTimestamp, project_id, nestedAction_id)
 
   db.session.add(new_issue)
   db.session.commit()
@@ -378,6 +396,7 @@ def update_issue():
   description = request.json['description']
   status = request.json['status']
   budget = request.json['budget']
+  assigned_to = request.json['assigned_to']
   dueTimestamp = datetime.strptime(request.json['dueTimestamp'], '%Y-%m-%dT%H:%M') if request.json['dueTimestamp'] != '' else datetime(1,1,1,1,1)
   
   issue = Issue.query.get(id)
@@ -386,6 +405,7 @@ def update_issue():
   issue.description = description
   issue.status = status
   issue.budget = budget
+  issue.assigned_to = assigned_to
   issue.dueTimestamp = dueTimestamp
 
   db.session.commit()
@@ -410,6 +430,7 @@ def add_action():
   description = request.json['description']
   status = request.json['status']
   budget = request.json['budget']
+  assigned_to = request.json['assigned_to']
   dueTimestamp = datetime.strptime(request.json['dueTimestamp'], '%Y-%m-%dT%H:%M') if request.json['dueTimestamp'] != '' else datetime(1,1,1,1,1)
   project_id = request.json['project_id']
 
@@ -420,7 +441,7 @@ def add_action():
 
   nestedAction_id = new_nestedAction.id
 
-  new_action = Action(name, description, status, budget, dueTimestamp, project_id, nestedAction_id)
+  new_action = Action(name, description, status, budget, assigned_to, dueTimestamp, project_id, nestedAction_id)
 
   db.session.add(new_action)
   db.session.commit()
@@ -450,6 +471,7 @@ def update_action():
   description = request.json['description']
   status = request.json['status']
   budget = request.json['budget']
+  assigned_to = request.json['assigned_to']
   dueTimestamp = datetime.strptime(request.json['dueTimestamp'], '%Y-%m-%dT%H:%M') if request.json['dueTimestamp'] != '' else datetime(1,1,1,1,1)
   
   action = Action.query.get(id)
@@ -458,6 +480,7 @@ def update_action():
   action.description = description
   action.status = status
   action.budget = budget
+  action.assigned_to = assigned_to
   action.dueTimestamp = dueTimestamp
 
   db.session.commit()
@@ -482,13 +505,14 @@ def add_nestedAction():
   description = request.json['description']
   status = request.json['status']
   budget = request.json['budget']
+  assigned_to = request.json['assigned_to']
   dueTimestamp = datetime.strptime(request.json['dueTimestamp'], '%Y-%m-%dT%H:%M') if request.json['dueTimestamp'] != '' else datetime(1,1,1,1,1)
 
   if ('parent_id' in request.json):
     parent_id = request.json['parent_id']
-    new_nestedAction = NestedAction(name, description, status, budget, dueTimestamp, parent_id)
+    new_nestedAction = NestedAction(name, description, status, budget, assigned_to, dueTimestamp, parent_id)
   else:
-    new_nestedAction = NestedAction(name, description, status, budget, dueTimestamp)
+    new_nestedAction = NestedAction(name, description, status, budget, assigned_to, dueTimestamp)
 
   db.session.add(new_nestedAction)
   db.session.commit()
@@ -518,6 +542,7 @@ def update_nestedAction():
   description = request.json['description']
   status = request.json['status']
   budget = request.json['budget']
+  assigned_to = request.json['assigned_to']
   dueTimestamp = datetime.strptime(request.json['dueTimestamp'], '%Y-%m-%dT%H:%M') if request.json['dueTimestamp'] != '' else datetime(1,1,1,1,1)
   
   nestedAction = NestedAction.query.get(id)
@@ -526,6 +551,7 @@ def update_nestedAction():
   nestedAction.description = description
   nestedAction.status = status
   nestedAction.budget = budget
+  nestedAction.assigned_to = assigned_to
   nestedAction.dueTimestamp = dueTimestamp
 
   db.session.commit()
